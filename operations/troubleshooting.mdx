@@ -1,0 +1,72 @@
+---
+title: "Troubleshooting"
+description: "Common failure areas for Ubuntu LTS upgrades and DP Py3 bringup."
+---
+
+# Troubleshooting
+
+Use logs and the current system state to identify the failing phase before making changes.
+
+## OS upgrade stopped between LTS releases
+
+Check:
+
+```bash
+cat /opt/aelladata/os-upgrade/state
+cat /opt/aelladata/os-upgrade/hop_history
+tail -200 /var/log/aella/auto_os_upgrade.log
+```
+
+If the failure is caused by a transient repository, network, DNS, or NTP problem, correct the condition and re-run the same approved upgrade command. Do not manually skip the failed LTS hop.
+
+## APT reports release metadata is not valid yet
+
+This usually indicates clock skew. Validate NTP and system time before retrying:
+
+```bash
+timedatectl
+ntpq -p 2>/dev/null || true
+```
+
+## Repository access fails
+
+For direct Internet upgrades, verify DNS and access to the required Ubuntu repository hostnames.
+
+For cache-server upgrades, verify TCP 3142 from the DP to the cache server and verify that the cache server itself can reach the Ubuntu repositories.
+
+For full-mirror upgrades, verify that the required release metadata and packages for the current LTS hop are actually present on the local mirror.
+
+## SSH access changes after upgrade
+
+Confirm the `aella` login shell was changed to `/bin/bash` before starting. Use console/hypervisor access if SSH is unavailable and validate the account shell and SSH service configuration.
+
+## Bringup fails during artifact or image loading
+
+Check free space on the DP and the hypervisor datastore:
+
+```bash
+df -h / /opt/aelladata
+```
+
+For dark-site bringup, verify the staged artifact checksums and ensure the bundle matches the target 6.5.0 release.
+
+## Worker does not join
+
+Validate:
+
+- master-to-worker SSH/connectivity
+- management and cluster IP addressing
+- MTU consistency
+- Kubernetes node state
+- DNS and NTP on the worker
+- the worker IP passed to `--worker-ips`
+
+Then inspect the master and worker bringup logs.
+
+## Preserve evidence
+
+Before manual cleanup or rollback, collect the relevant logs and current state. Avoid deleting upgrade state, package data, Kubernetes state, or DP data unless an approved engineering recovery procedure explicitly requires it.
+
+## Rollback
+
+If recovery is not safe or the DP cannot be returned to a validated state, use the pre-upgrade VM snapshot or approved backup according to the platform-specific rollback procedure.
