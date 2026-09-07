@@ -1,0 +1,78 @@
+---
+title: "Post-Upgrade Validation"
+description: "Validate Ubuntu 24.04, DP 6.5.0, cluster readiness, and service health after bringup."
+---
+
+# Post-Upgrade Validation
+
+Do not close the maintenance window immediately after the script exits. Validate both the operating system and the DP application state.
+
+## Operating system
+
+```bash
+cat /etc/os-release
+uname -r
+```
+
+Confirm Ubuntu 24.04 is active and the node rebooted into the expected kernel.
+
+## DP version and status
+
+From the DP CLI, verify the target version and overall readiness:
+
+```text
+show version
+show status
+```
+
+For a successful 6.5.0 bringup, expect the version to report `6.5.0` and role-specific status checks to indicate the platform is ready.
+
+## Time and DNS
+
+Validate time synchronization and name resolution again after the upgrade:
+
+```bash
+timedatectl
+systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
+```
+
+If `ntpsec` is used:
+
+```bash
+ntpq -p
+```
+
+## Cluster validation
+
+For multi-node deployments, check that all expected nodes are present and ready:
+
+```bash
+kubectl get nodes -o wide
+```
+
+Validate role-specific labels and cluster networking as required by the release procedure.
+
+## Service and log checks
+
+Review the final sections of both upgrade logs:
+
+```bash
+tail -100 /var/log/aella/auto_os_upgrade.log
+tail -100 /var/log/aella/aella_py3_bringup.log
+```
+
+Look for the documented completion/validation result and investigate any warning or failed check before returning the system to service.
+
+## Functional checks
+
+At minimum confirm:
+
+- all expected DP nodes are ready
+- expected pods/services are running
+- DNS is configured
+- NTP is synchronized
+- licensing/OTP state is valid where applicable
+- DL/DA role-specific services are healthy
+- the Web UI and normal DP operations are reachable
+
+For production upgrades, keep the pre-upgrade snapshot until the agreed post-upgrade observation period is complete.
