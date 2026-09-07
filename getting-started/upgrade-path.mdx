@@ -1,0 +1,51 @@
+---
+title: "Upgrade Path"
+description: "Choose the correct DP OS upgrade and bringup path from the current system state."
+---
+
+# Upgrade Path
+
+The DP upgrade process has two ordered phases. Determine the current OS and DP version before selecting a path.
+
+## Phase 1 — Ubuntu OS upgrade
+
+For DPs still running Ubuntu 16.04, upgrade through every LTS release in order:
+
+```text
+16.04 (Xenial)
+  → 18.04 (Bionic)
+  → 20.04 (Focal)
+  → 22.04 (Jammy)
+  → 24.04 (Noble)
+```
+
+Do not skip an LTS hop.
+
+## Phase 2 — DP bringup
+
+After the operating system reaches Ubuntu 24.04, use `bringup_py3_dp_after_os_upgrade.sh` to bring the DP to 6.5.0 Py3.
+
+```bash
+sudo bash bringup_py3_dp_after_os_upgrade.sh --version 6.5.0
+```
+
+If the DP already runs Ubuntu 24.04, Phase 1 is not required.
+
+## Target states
+
+| Current state | Phase 1 | Phase 2 | Final state |
+| --- | --- | --- | --- |
+| DP 6.2.0+ / Ubuntu 16.04 | Required | Required | 6.5.0 Py3 / Ubuntu 24.04 |
+| DP 6.2.0–6.4.0 / Ubuntu 24.04 | Skip | Required | 6.5.0 Py3 / Ubuntu 24.04 |
+| DP 6.5.0 / Ubuntu 24.04 | Skip | Skip | No action |
+
+To move beyond 6.5.0, use the regular online or offline UI upgrade after the DP is stable on Ubuntu 24.04.
+
+## Estimated duration
+
+Typical source documentation estimates are approximately:
+
+- Phase 1: **2–3 hours per DP** depending on package source and cache state.
+- Phase 2: **about 40–65 minutes per DP** for a first bringup in offline-image scenarios; re-runs can be significantly faster when idempotency gates are satisfied.
+
+Actual time varies by environment, storage performance, package cache state, and topology.
