@@ -1,0 +1,44 @@
+---
+title: "DP OS Upgrade"
+description: "Upgrade Stellar Cyber Data Processor systems to Ubuntu 24.04 and complete DP bringup."
+---
+
+# DP OS Upgrade
+
+This site is the operator guide for upgrading Stellar Cyber Data Processor (DP) systems to Ubuntu 24.04 and then bringing the DP software up on the new operating system.
+
+## Upgrade model
+
+The supported workflow is split into two ordered phases:
+
+1. **Phase 1 — Ubuntu OS upgrade**: Ubuntu 16.04 → 18.04 → 20.04 → 22.04 → 24.04.
+2. **Phase 2 — DP bringup**: bring the DP software up to **6.5.0 Py3** on Ubuntu 24.04.
+
+Ubuntu LTS releases must be upgraded sequentially; do not skip intermediate LTS releases.
+
+## Which path should I use?
+
+| Starting state | Required action | Result |
+| --- | --- | --- |
+| DP 6.2.0+ on Ubuntu 16.04 | Run Phase 1, then Phase 2 | DP 6.5.0 Py3 on Ubuntu 24.04 |
+| DP 6.2.0 / 6.3.0 / 6.4.0 on Ubuntu 24.04 | Skip Phase 1 and run Phase 2 | DP 6.5.0 Py3 on Ubuntu 24.04 |
+| DP already 6.5.0 on Ubuntu 24.04 | No OS/bringup action required | Ready for normal upgrade flow |
+| Need 6.6.0 or later | Reach 6.5.0 / Ubuntu 24.04 first, then use the regular UI upgrade | 6.6.0+ |
+
+## Phase 1 connectivity choices
+
+Choose the Phase 1 method that matches the customer environment:
+
+- **Direct Internet** — each DP downloads Ubuntu packages from Canonical repositories.
+- **Cache server** — recommended for multi-DP environments; packages are fetched once and reused over the LAN.
+- **Full local mirror** — for fully offline environments with no Internet egress.
+
+## Before you start
+
+Always take a VM snapshot or full backup before starting the OS upgrade. The OS upgrade is destructive and cannot be rolled back after it begins without restoring a snapshot or backup.
+
+Also make sure the `aella` login shell is `/bin/bash` before the upgrade. A restricted `aella_cli` login shell can prevent access after the OS transition.
+
+## Next steps
+
+Start with **Upgrade Path** to confirm the correct workflow, then review **Prerequisites** before making any change to a DP.
