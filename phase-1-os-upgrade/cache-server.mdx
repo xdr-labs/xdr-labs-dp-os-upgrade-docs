@@ -1,0 +1,58 @@
+---
+title: "Cache Server Upgrade"
+description: "Use apt-cacher-ng to serve Ubuntu upgrade packages to multiple DPs over the LAN."
+---
+
+# Cache Server Upgrade
+
+The cache-server method is recommended for multi-DP sites and restricted environments where DPs should not download Ubuntu packages independently.
+
+## How it works
+
+A small Ubuntu 24.04 cache server runs `apt-cacher-ng` and an NTP service. The first DP causes required packages to be downloaded from the Ubuntu repositories; later DPs reuse cached packages at LAN speed.
+
+The source guide recommends approximately:
+
+| Resource | Recommendation |
+| --- | --- |
+| OS | Ubuntu 24.04 Server |
+| CPU | 2 vCPU |
+| RAM | 2 GB |
+| Disk | 60 GB |
+| Network | Same LAN as the DPs with outbound Internet access |
+
+## Network path
+
+DPs need access to the cache server on:
+
+- TCP 3142 — `apt-cacher-ng`
+- UDP 123 — NTP
+
+Only the cache server needs the Ubuntu repository egress rules.
+
+## Pre-flight
+
+From each DP, verify the approved upgrade script and cache-server address, then run the implementation's pre-flight check before installation.
+
+The source guide documents this pattern:
+
+```bash
+./dp-os-upgrade-only.sh check <cache-server-ip>
+./dp-os-upgrade-only.sh install <cache-server-ip>
+```
+
+For dark-site variants, use only flags and commands provided by the release-specific script package.
+
+## Important operational rule
+
+The source cache-server guide says to upgrade **one DP at a time**. Do not start simultaneous OS upgrades unless a newer validated procedure explicitly permits it.
+
+## Monitoring
+
+Watch the DP upgrade log:
+
+```bash
+tail -f /var/log/aella/auto_os_upgrade.log
+```
+
+On the cache server, monitor `apt-cacher-ng`, NTP, disk consumption, and repository reachability throughout the maintenance window.
