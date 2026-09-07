@@ -1,0 +1,49 @@
+---
+title: "Online Bringup"
+description: "Run DP 6.5.0 Py3 bringup when the DP can reach the approved artifact source."
+---
+
+# Online Bringup
+
+Use online bringup when the DP can reach the approved provisioning source for the 6.5.0 Py3 artifacts.
+
+## Before running
+
+Confirm:
+
+- Ubuntu is already 24.04
+- the `aella` user uses `/bin/bash`
+- NTP and DNS are healthy
+- required disk and memory are available
+- a fresh VM snapshot or backup exists
+- cluster connectivity is working
+
+## AIO or master-only node
+
+```bash
+sudo bash bringup_py3_dp_after_os_upgrade.sh --version 6.5.0
+```
+
+## Cluster with workers
+
+Run the command on the DL or DA master and pass that master's worker IP addresses:
+
+```bash
+sudo bash bringup_py3_dp_after_os_upgrade.sh \
+  --version 6.5.0 \
+  --worker-ips "<worker1-ip>,<worker2-ip>"
+```
+
+The master orchestrates its workers sequentially in the documented flow.
+
+## Monitor
+
+```bash
+tail -f /var/log/aella/aella_py3_bringup.log
+```
+
+Do not interpret every quiet period as a hang. The source runbook notes that some service-drain and installation stages can be silent briefly.
+
+## Completion
+
+After bringup finishes, validate the DP version, pod/service status, node readiness, DNS, NTP, licensing, and role-specific health checks before declaring the maintenance complete.
