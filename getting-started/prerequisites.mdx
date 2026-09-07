@@ -1,0 +1,88 @@
+---
+title: "Prerequisites"
+description: "Safety, system, storage, time, shell, and network checks required before a DP OS upgrade."
+---
+
+# Prerequisites
+
+Complete these checks before starting either phase.
+
+## Backup and rollback
+
+Take a **VM snapshot or full backup of every DP node** immediately before the upgrade. The OS upgrade is destructive; restoring a snapshot or backup is the primary rollback method if the upgrade fails.
+
+For clusters, protect the master and every worker node.
+
+## Login shell
+
+The `aella` user must use `/bin/bash` before the upgrade or Py3 bringup.
+
+```bash
+chsh -s /bin/bash aella
+chsh -s /bin/bash root
+```
+
+Verify with:
+
+```bash
+getent passwd aella
+```
+
+Do not proceed if the login still lands in the restricted `aella_cli` shell.
+
+## Time synchronization
+
+Accurate time is mandatory. APT can reject Ubuntu release metadata when the clock is skewed.
+
+Check the active time service and synchronization state:
+
+```bash
+systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
+timedatectl
+```
+
+If `ntpsec` is installed, also verify a synchronized peer:
+
+```bash
+ntpq -p
+```
+
+## Disk and compute
+
+For the OS upgrade, reserve enough free space for package downloads and each LTS transition.
+
+For offline 6.5.0 Py3 bringup, the source runbook specifies:
+
+- at least **70 GB free under `/opt/aelladata`**
+- at least **20 GB free on `/`**
+- sufficient hypervisor datastore space for thin-provisioned VMs
+- **100 GB+ RAM** for DL master / AIO
+- **80 GB+ RAM** for DA master and workers
+- **32 CPU cores recommended**, 16 minimum
+
+Validate the actual platform requirements before customer execution.
+
+## Network and DNS
+
+Confirm:
+
+- hostnames are unique and resolvable inside the cluster
+- static management addresses are configured
+- DNS can resolve the required Ubuntu and internal hostnames
+- NTP is reachable
+- DP-to-DP cluster connectivity is available
+- MTU is consistent end-to-end
+
+For dark-site environments, do not assume Internet connectivity is required. Select either a cache-server path or a full local mirror according to the deployment design.
+
+## MTU check for clusters
+
+Use MTU 1500 unless jumbo frames are verified across the entire path between all DP nodes.
+
+A simple probe is:
+
+```bash
+ping -M do -s 1472 <peer-dp-ip>
+```
+
+Do not enable jumbo MTU based only on the host configuration; the complete switch path must support it.
