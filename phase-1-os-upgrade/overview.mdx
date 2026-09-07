@@ -1,0 +1,46 @@
+---
+title: "Phase 1 Overview"
+description: "Upgrade Ubuntu 16.04 to Ubuntu 24.04 through all required LTS releases."
+---
+
+# Phase 1 — Ubuntu OS Upgrade
+
+Phase 1 upgrades only the operating system. The required LTS sequence is:
+
+```text
+16.04 → 18.04 → 20.04 → 22.04 → 24.04
+```
+
+The process is designed to be resumable across reboots and LTS hops. If a failure occurs, correct the underlying issue and re-run the same upgrade command rather than manually deleting state files unless an internal engineering procedure explicitly requires it.
+
+## Choose a package source
+
+There are three supported deployment patterns in the source documentation:
+
+| Method | Best for | Internet requirement |
+| --- | --- | --- |
+| Direct Internet | Simple environments with unrestricted egress | Every DP needs access to Ubuntu repositories |
+| apt-cacher-ng cache server | Multi-DP and restricted environments | Cache server needs Internet; DPs use the cache over LAN |
+| Full local mirror | Fully air-gapped environments | No Internet required during upgrade |
+
+## Monitoring
+
+The automated OS upgrade records state and progress under `/opt/aelladata/os-upgrade/` and logs to:
+
+```bash
+/var/log/aella/auto_os_upgrade.log
+```
+
+Useful commands:
+
+```bash
+cat /opt/aelladata/os-upgrade/state
+cat /opt/aelladata/os-upgrade/hop_history
+tail -f /var/log/aella/auto_os_upgrade.log
+```
+
+Expected states include values such as `INITIALIZED`, `UPGRADING`, `BLOCKED`, `RESUMED`, `FAILED`, and `COMPLETED` depending on the implementation version.
+
+## Reboots
+
+Expect automatic reboots between Ubuntu release transitions. Plan a maintenance window and maintain console or hypervisor access in case SSH is temporarily unavailable.
