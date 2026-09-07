@@ -1,0 +1,51 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "oak",
+  "name": "DP OS Upgrade",
+  "description": "Operator documentation for upgrading Stellar Cyber Data Processor systems from Ubuntu 16.04 to Ubuntu 24.04 and completing DP bringup on Ubuntu 24.04.",
+  "colors": {
+    "primary": "#16A34A"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "index",
+              "getting-started/upgrade-path",
+              "getting-started/prerequisites"
+            ]
+          },
+          {
+            "group": "Phase 1 — Ubuntu OS Upgrade",
+            "pages": [
+              "phase-1-os-upgrade/overview",
+              "phase-1-os-upgrade/direct-internet",
+              "phase-1-os-upgrade/cache-server",
+              "phase-1-os-upgrade/offline-mirror"
+            ]
+          },
+          {
+            "group": "Phase 2 — DP Bringup",
+            "pages": [
+              "phase-2-dp-bringup/overview",
+              "phase-2-dp-bringup/online",
+              "phase-2-dp-bringup/dark-site",
+              "phase-2-dp-bringup/cluster-workers"
+            ]
+          },
+          {
+            "group": "Operations",
+            "pages": [
+              "operations/validation",
+              "operations/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
