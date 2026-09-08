@@ -1,0 +1,47 @@
+---
+title: "Move a Prepared Server to a Dark Site"
+description: "Reuse prepared artifacts after moving the Mirror Server into its final restricted network."
+---
+
+# Move a Prepared Server to a Dark Site
+
+A Mirror Server can be prepared and tested in an Internet-connected environment, then moved into the final dark-site network.
+
+After the move:
+
+1. boot the Mirror Server and configure its final dark-site IP address
+2. open the GUI:
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+3. open **Menu 1 — Configuration**
+4. update the **Mirror Server IP** and save
+5. run:
+
+```text
+2  Download and Prepare Upgrade Files
+3  Enable HTTP Distribution
+4  Verify Upgrade Readiness
+7  Show DP Client Upgrade Commands
+```
+
+6. confirm Menu 4 reports `PASS`
+7. use only the newly generated Menu 7 commands
+
+## Why Menu 2 is repeated
+
+The current implementation reuses already prepared local artifacts where they remain valid, but it rebuilds client-side files that embed the Mirror Server IP.
+
+Do not reuse commands generated before the IP change.
+
+## Dark-site network requirement
+
+Once the prepared server is in the restricted environment, DP hosts only need to reach:
+
+```text
+http://<FINAL_MIRROR_SERVER_IP>:80
+```
+
+The DP hosts do not need direct Cloudflare R2 or ACPS access.
