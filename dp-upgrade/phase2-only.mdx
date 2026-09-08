@@ -1,0 +1,43 @@
+---
+title: "Phase 2 Only"
+description: "Bring a supported DP already on Ubuntu 24.04 to DP 6.6.0 without OS-hop preparation."
+---
+
+# Phase 2 Only
+
+Use **Phase 2 Only** when the DP is already on Ubuntu 24.04 and requires the current DP 6.6.0 bringup.
+
+## Mirror Server behavior
+
+In this mode, Menu 2:
+
+- skips Cloudflare R2 OS Core preparation
+- skips all Ubuntu hop mirror material
+- downloads/reuses the DP 6.6.0 Phase 2 artifacts from ACPS
+- verifies checksums
+- publishes the Phase 2 bundle and client files through the Mirror Server
+
+## DP-side behavior
+
+Menu 7 omits the Ubuntu 16.04 → 24.04 hop commands. It still generates the common prerequisite/staging steps required on every target node.
+
+For clustered deployments, final bringup remains master-driven:
+
+- DL master orchestrates its DL workers
+- DA master orchestrates its DA workers
+
+For AIO or single-node, run the generated procedure directly on that DP.
+
+## Before execution
+
+Even though no OS-hop chain is required:
+
+- create the required hypervisor snapshot
+- verify Menu 4 reports `PASS`
+- ensure every target node is Ubuntu 24.04
+- use the latest Menu 7 output generated for the current Mirror Server IP
+- validate NTP, DNS, storage, and cluster connectivity as required by the generated preflight
+
+## Target
+
+The current Mirror Manager Phase 2 target is **6.6.0**. Older 6.5.0 `bringup_py3 --skip-download` runbooks are historical references and are not the active workflow documented here.
