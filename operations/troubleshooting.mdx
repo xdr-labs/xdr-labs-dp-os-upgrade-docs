@@ -1,72 +1,101 @@
 ---
 title: "Troubleshooting"
-description: "Common failure areas for Ubuntu LTS upgrades and DP Py3 bringup."
+description: "Diagnose Mirror Manager preparation, HTTP readiness, Phase 1 resume, and DP 6.6.0 bringup problems."
 ---
 
 # Troubleshooting
 
-Use logs and the current system state to identify the failing phase before making changes.
+Identify which layer failed before changing anything:
 
-## OS upgrade stopped between LTS releases
+```text
+Mirror Server configuration
+  → Download / prepare
+  → HTTP distribution
+  → Readiness
+  → DP Phase 1 OS upgrade
+  → DP Phase 2 bringup
+  → Post-upgrade validation
+```
+
+## Mirror Manager does not reopen after SSH disconnect
+
+Reconnect and run:
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+Do not rerun `install.sh` simply to reopen the GUI.
+
+## Download and Prepare was interrupted
+
+Run Menu 2 again after confirming another copy is not already active.
+
+The workflow can reuse completed files and partial data. Do not delete ACPS `.part` files merely to force a clean retry.
+
+Useful checks:
+
+```bash
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+## Readiness is NOT READY or FAIL
+
+Recheck in this order:
+
+1. saved Configuration
+2. Mirror Server IP
+3. prepared artifact status
+4. nginx configuration and service state
+5. live HTTP access to the files required by the selected mode
+6. Menu 4 again
+
+Do not start the DP upgrade until readiness reports `PASS`.
+
+## Mirror Server IP changed
+
+Update the IP in Configuration and run the required sequence again:
+
+```text
+2 → 3 → 4 → 7
+```
+
+Do not reuse old Menu 7 commands because generated client artifacts contain the saved Mirror Server IP.
+
+## Phase 1 OS upgrade is blocked
+
+The current Phase 1 engine distinguishes retryable conditions from integrity or evidence problems.
+
+Transient examples include:
+
+- DNS failure
+- HTTP/network failure
+- NTP failure
+- active apt/dpkg lock
+
+Correct the cause and follow the current status/recovery guidance. Do not delete `/opt/aelladata/os-upgrade` to make the state disappear.
+
+## Ubuntu 22.04 looks unhealthy
+
+Jammy is an intermediate OS state in a Full upgrade. On affected DP builds, the product runtime may be unavailable or incompatible during this hop.
+
+Do not repair kubelet, Docker, or the DP runtime merely to make the intermediate state healthy. Continue the validated OS workflow to Ubuntu 24.04, then complete Phase 2.
+
+## Worker bringup fails
 
 Check:
 
-```bash
-cat /opt/aelladata/os-upgrade/state
-cat /opt/aelladata/os-upgrade/hop_history
-tail -200 /var/log/aella/auto_os_upgrade.log
-```
-
-If the failure is caused by a transient repository, network, DNS, or NTP problem, correct the condition and re-run the same approved upgrade command. Do not manually skip the failed LTS hop.
-
-## APT reports release metadata is not valid yet
-
-This usually indicates clock skew. Validate NTP and system time before retrying:
-
-```bash
-timedatectl
-ntpq -p 2>/dev/null || true
-```
-
-## Repository access fails
-
-For direct Internet upgrades, verify DNS and access to the required Ubuntu repository hostnames.
-
-For cache-server upgrades, verify TCP 3142 from the DP to the cache server and verify that the cache server itself can reach the Ubuntu repositories.
-
-For full-mirror upgrades, verify that the required release metadata and packages for the current LTS hop are actually present on the local mirror.
-
-## SSH access changes after upgrade
-
-Confirm the `aella` login shell was changed to `/bin/bash` before starting. Use console/hypervisor access if SSH is unavailable and validate the account shell and SSH service configuration.
-
-## Bringup fails during artifact or image loading
-
-Check free space on the DP and the hypervisor datastore:
-
-```bash
-df -h / /opt/aelladata
-```
-
-For dark-site bringup, verify the staged artifact checksums and ensure the bundle matches the target 6.5.0 release.
-
-## Worker does not join
-
-Validate:
-
-- master-to-worker SSH/connectivity
-- management and cluster IP addressing
-- MTU consistency
+- the correct DL/DA worker list was saved in Mirror Manager
+- master-to-worker SSH reachability
+- the configured common `aella` worker password
+- node IP addressing and MTU
+- NTP and DNS
 - Kubernetes node state
-- DNS and NTP on the worker
-- the worker IP passed to `--worker-ips`
+- that common staging completed on all nodes before final master orchestration
 
-Then inspect the master and worker bringup logs.
-
-## Preserve evidence
-
-Before manual cleanup or rollback, collect the relevant logs and current state. Avoid deleting upgrade state, package data, Kubernetes state, or DP data unless an approved engineering recovery procedure explicitly requires it.
+Regenerate Menu 7 output after any relevant configuration change.
 
 ## Rollback
 
-If recovery is not safe or the DP cannot be returned to a validated state, use the pre-upgrade VM snapshot or approved backup according to the platform-specific rollback procedure.
+The project does not provide OS or DP-runtime downgrade commands. If a destructive failure cannot be safely recovered using the current release tooling, restore the approved hypervisor snapshot.
