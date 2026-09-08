@@ -1,0 +1,81 @@
+---
+title: "Quick Start"
+description: "Install the Mirror Manager, prepare upgrade files, verify readiness, and generate DP-side commands."
+---
+
+# Quick Start
+
+Use a clean **Ubuntu 24.04 LTS amd64** server with a stable IPv4 address reachable by every DP host.
+
+## 1. Install the Mirror Manager
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+
+git clone https://github.com/xdr-labs/ubuntu-mirror-automation.git
+cd ubuntu-mirror-automation
+sudo ./install.sh
+```
+
+On an interactive terminal, the installer opens the Mirror Manager GUI. Reopen it at any time with:
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+Do not rerun `install.sh` just to reopen the GUI.
+
+## 2. Configure the project
+
+Open **Menu 1 — Configuration** and set:
+
+- Preparation Mode
+- Mirror Server IP
+- ACPS Username
+- ACPS Password
+- DL Worker IP addresses, if applicable
+- DA Worker IP addresses, if applicable
+- Worker SSH Password (`aella`), if workers are configured
+
+Then test the ACPS connection and save the configuration.
+
+For AIO or single-node deployments, leave both worker-IP lists empty.
+
+## 3. Prepare and publish the files
+
+Run the menus in this order:
+
+```text
+2  Download and Prepare Upgrade Files
+3  Enable HTTP Distribution
+4  Verify Upgrade Readiness
+```
+
+Do not proceed until Menu 4 reports:
+
+```text
+PASS
+```
+
+## 4. Generate the DP commands
+
+Open:
+
+```text
+7  Show DP Client Upgrade Commands
+```
+
+Menu 7 is the authoritative source for the DP-side commands for the current configuration and Mirror Server IP.
+
+The same output is saved on the Mirror Server at:
+
+```text
+/var/log/ubuntu-mirror-automation/dp-client-upgrade-commands.txt
+```
+
+## 5. Upgrade the DP
+
+Follow Menu 7 exactly. For clustered deployments, complete the common staging steps on all target nodes before running the role-specific bringup command on each master.
+
+After the upgrade, validate Ubuntu 24.04, DP 6.6.0, node readiness, services, NTP/DNS, and cluster health before closing the maintenance window.
