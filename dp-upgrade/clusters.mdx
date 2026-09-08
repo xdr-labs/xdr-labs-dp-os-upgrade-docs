@@ -5,47 +5,31 @@ description: "Configure worker lists once, stage every node, and run final bring
 
 # DL/DA Clusters
 
-The Mirror Manager stores the cluster worker lists in Configuration and uses them when generating the final DP commands.
+The Mirror Manager stores cluster worker lists in Configuration and uses them when generating final DP commands.
 
 ## Configure workers
 
-In Menu 1:
-
-- **DL Worker IP addresses**: DL workers only; do not include the DL master
-- **DA Worker IP addresses**: DA workers only; do not include the DA master
-- **Worker SSH Password (aella)**: one common password used by each master to connect to its own workers
+- DL Worker IP addresses: DL workers only; do not include the DL master
+- DA Worker IP addresses: DA workers only; do not include the DA master
+- Worker SSH Password (`aella`): one common password used by each master to connect to its own workers
 
 ## Common staging first
 
-For clustered deployments, run the common Menu 7 steps on every target node:
-
-```text
-DL master
-DL worker(s)
-DA master
-DA worker(s)
-```
-
-Complete the common staging/prerequisite phase on **all nodes** before starting final bringup.
+Run the common Menu 7 preparation/staging steps on every target node: DL master, DL workers, DA master, and DA workers. Complete common staging on **all nodes** before final bringup.
 
 ## Final bringup
 
 Run the role-specific final command only from the masters:
 
 ```text
-DL master  ──> orchestrates configured DL workers
-DA master  ──> orchestrates configured DA workers
+DL master  ──> configured DL workers
+DA master  ──> configured DA workers
 ```
 
 Do not run the master-orchestration command manually on workers.
 
-The generated command uses the worker configuration saved in Mirror Manager. Use Menu 7 output rather than rebuilding `--worker-ips` or password flags by hand.
+## Validation order
 
-## Recommended validation order
+Finish the DL master/worker bringup and confirm DL readiness, then complete the DA side and validate all expected Kubernetes nodes, services, NTP/DNS, cluster connectivity, and application readiness.
 
-1. finish the DL master/worker bringup and confirm DL readiness
-2. run the DA master/worker bringup
-3. confirm all expected Kubernetes nodes and services are ready
-4. validate application, NTP, DNS, and cluster connectivity
-
-The exact release-specific order printed by Menu 7 remains authoritative when it is more specific than this overview.
+When Menu 7 gives a more specific release-dependent order, Menu 7 is authoritative.

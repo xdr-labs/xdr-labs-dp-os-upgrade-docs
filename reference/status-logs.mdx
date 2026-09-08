@@ -7,12 +7,6 @@ description: "Key Mirror Server and DP-side status files, generated commands, an
 
 ## Mirror Server
 
-Open the GUI:
-
-```bash
-sudo ubuntu-offline-mirror mirror-manager
-```
-
 Useful files:
 
 ```text
@@ -22,9 +16,9 @@ Useful files:
 /var/log/ubuntu-mirror-automation/dp-client-upgrade-commands.txt
 ```
 
-The configuration file contains protected credentials and should remain root-owned. Do not attach it to public tickets without sanitizing secrets.
+The configuration file contains protected credentials. Sanitize secrets before attaching it to tickets.
 
-## Mirror Manager readiness
+## Readiness
 
 Menu 4 can report:
 
@@ -39,7 +33,7 @@ A DP upgrade should normally begin only when the current configuration reports `
 
 ## DP Phase 1 evidence
 
-The current Phase 1 engine records upgrade state and evidence under:
+The current Phase 1 engine records evidence under:
 
 ```text
 /var/log/aella/auto_os_upgrade.log
@@ -49,17 +43,8 @@ The current Phase 1 engine records upgrade state and evidence under:
 /opt/aelladata/os-upgrade/reports/
 ```
 
-The state machine can include states such as `BLOCKED`, `FAILED`, `PAUSED`, `RESUME_REQUIRED`, and `COMPLETED`.
-
 Preserve this evidence when escalating a failed upgrade. Do not delete state simply to force a retry.
 
 ## Application validation
 
-After Phase 2, use the DP CLI and platform checks required by the release, including:
-
-```text
-show version
-show status
-```
-
-For clusters, verify all expected Kubernetes nodes and services before ending the maintenance window.
+After Phase 2, verify the release and status from the DP CLI (`show version`, `show status`) and validate all expected cluster nodes/services.

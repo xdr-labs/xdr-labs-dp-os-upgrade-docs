@@ -8,94 +8,41 @@ description: "Diagnose Mirror Manager preparation, HTTP readiness, Phase 1 resum
 Identify which layer failed before changing anything:
 
 ```text
-Mirror Server configuration
-  → Download / prepare
-  → HTTP distribution
-  → Readiness
-  → DP Phase 1 OS upgrade
-  → DP Phase 2 bringup
-  → Post-upgrade validation
+Configuration → Download/Prepare → HTTP → Readiness → Phase 1 → Phase 2 → Validation
 ```
 
-## Mirror Manager does not reopen after SSH disconnect
+## GUI after SSH disconnect
 
-Reconnect and run:
+Reopen the existing installation:
 
 ```bash
 sudo ubuntu-offline-mirror mirror-manager
 ```
 
-Do not rerun `install.sh` simply to reopen the GUI.
+Do not rerun `install.sh` merely to reopen the GUI.
 
-## Download and Prepare was interrupted
+## Menu 2 interrupted
 
-Run Menu 2 again after confirming another copy is not already active.
-
-The workflow can reuse completed files and partial data. Do not delete ACPS `.part` files merely to force a clean retry.
-
-Useful checks:
-
-```bash
-ls -lt /var/log/ubuntu-mirror-automation/
-cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
-```
+Run Menu 2 again after confirming another copy is not active. Keep reusable partial `.part` files.
 
 ## Readiness is NOT READY or FAIL
 
-Recheck in this order:
-
-1. saved Configuration
-2. Mirror Server IP
-3. prepared artifact status
-4. nginx configuration and service state
-5. live HTTP access to the files required by the selected mode
-6. Menu 4 again
-
-Do not start the DP upgrade until readiness reports `PASS`.
+Recheck saved Configuration, Mirror Server IP, artifact status, nginx, live HTTP files, then run Menu 4 again. Do not start the DP upgrade until `PASS`.
 
 ## Mirror Server IP changed
 
-Update the IP in Configuration and run the required sequence again:
+Update Configuration and repeat **2 → 3 → 4 → 7**. Do not reuse old Menu 7 commands.
 
-```text
-2 → 3 → 4 → 7
-```
+## Phase 1 is blocked
 
-Do not reuse old Menu 7 commands because generated client artifacts contain the saved Mirror Server IP.
-
-## Phase 1 OS upgrade is blocked
-
-The current Phase 1 engine distinguishes retryable conditions from integrity or evidence problems.
-
-Transient examples include:
-
-- DNS failure
-- HTTP/network failure
-- NTP failure
-- active apt/dpkg lock
-
-Correct the cause and follow the current status/recovery guidance. Do not delete `/opt/aelladata/os-upgrade` to make the state disappear.
+Transient DNS, HTTP/network, NTP, or apt/dpkg lock problems may be retryable. Integrity/evidence conflicts fail closed. Correct the root cause and follow the current recovery guidance; do not delete `/opt/aelladata/os-upgrade` to hide the state.
 
 ## Ubuntu 22.04 looks unhealthy
 
-Jammy is an intermediate OS state in a Full upgrade. On affected DP builds, the product runtime may be unavailable or incompatible during this hop.
-
-Do not repair kubelet, Docker, or the DP runtime merely to make the intermediate state healthy. Continue the validated OS workflow to Ubuntu 24.04, then complete Phase 2.
+Jammy is an intermediate state. On affected DP builds, product components can be unavailable or incompatible. Do not repair kubelet/Docker merely to make the transitional state healthy; continue to Ubuntu 24.04 and Phase 2.
 
 ## Worker bringup fails
 
-Check:
+Check worker lists, master-to-worker SSH, the configured common `aella` password, IP/MTU, NTP/DNS, Kubernetes state, and that common staging completed on all nodes before master orchestration.
 
-- the correct DL/DA worker list was saved in Mirror Manager
-- master-to-worker SSH reachability
-- the configured common `aella` worker password
-- node IP addressing and MTU
-- NTP and DNS
-- Kubernetes node state
-- that common staging completed on all nodes before final master orchestration
-
-Regenerate Menu 7 output after any relevant configuration change.
-
-## Rollback
-
-The project does not provide OS or DP-runtime downgrade commands. If a destructive failure cannot be safely recovered using the current release tooling, restore the approved hypervisor snapshot.
+If destructive recovery cannot be completed safely, restore the approved hypervisor snapshot.
