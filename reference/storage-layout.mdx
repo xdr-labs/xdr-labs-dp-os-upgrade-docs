@@ -1,0 +1,39 @@
+---
+title: "Storage & Filesystem"
+description: "Current validated disk baseline, artifact sizes, and filesystem constraints."
+---
+
+# Storage & Filesystem
+
+## Current baseline
+
+The current validated deployment uses one **100 GB disk including Ubuntu OS and mirror data**.
+
+Approximate current data sizes:
+
+| Data | Approximate size |
+| --- | ---: |
+| Ubuntu OS Core / selective mirror | 3.4 GiB |
+| DP 6.6.0 Phase 2 bundle | 28.2 GiB |
+| Fresh Download and Prepare peak | ~70 GiB |
+
+The application performs a conservative free-space preflight and keeps a safety reserve. Future artifact sets can grow, so 100 GB is a current baseline rather than a permanent sizing guarantee.
+
+## Optional separate data disk
+
+A separate data disk is optional. If used, keep these paths on the **same filesystem** because preparation uses hard links and atomic renames:
+
+```text
+/var/spool/apt-mirror
+/var/spool/apt-mirror/.install-cache
+/var/spool/apt-mirror/selective
+/var/spool/apt-mirror/dp-phase2
+```
+
+The path name `/var/spool/apt-mirror` is retained for compatibility; the active workflow does not mean that the product builds a traditional full `apt-mirror` archive.
+
+## Resume-aware disk accounting
+
+Interrupted ACPS downloads can retain `.part` files. The preflight accounts for reusable completed and partial data rather than counting the entire download twice.
+
+Do not delete `.part` files merely to retry an interrupted download.
