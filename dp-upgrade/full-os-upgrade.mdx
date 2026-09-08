@@ -1,0 +1,48 @@
+---
+title: "Full OS Upgrade + Phase 2"
+description: "Upgrade Ubuntu 16.04 through each LTS hop to 24.04, then complete DP 6.6.0 bringup."
+---
+
+# Full OS Upgrade + Phase 2
+
+Use this mode for supported DPs that still run Ubuntu 16.04.
+
+## High-level sequence
+
+Menu 7 guides the operator through the current release-specific commands. Conceptually the flow is:
+
+1. create the required hypervisor snapshot(s)
+2. pause DP services on Ubuntu 16.04 as instructed
+3. upgrade Ubuntu one LTS hop at a time
+4. reach and validate Ubuntu 24.04
+5. stage the DP 6.6.0 Phase 2 files on every required node
+6. run final Phase 2 bringup from the appropriate master/AIO node
+7. resume services and validate the DP/cluster
+
+The OS chain is fixed:
+
+```text
+16.04 → 18.04 → 20.04 → 22.04 → 24.04
+```
+
+Do not skip an LTS hop.
+
+## Phase 1 is OS-only
+
+The active Phase 1 tooling treats operating-system success separately from DP product health. Intermediate releases are not required to run the full DP runtime.
+
+In particular, Ubuntu 22.04 can be an intentionally transitional state. On affected builds, `aella_cli`, kubelet, Docker, or DP workloads may not be fully healthy.
+
+Do **not** repair the intermediate runtime merely to make Jammy look healthy. Continue the validated OS procedure to Ubuntu 24.04; Phase 2 rebuilds the DP runtime.
+
+## State and resume behavior
+
+The Phase 1 implementation maintains durable state and supports reboot/resume boundaries. Transient network, DNS, NTP, and package-lock problems can enter a retryable blocked state; integrity conflicts fail closed.
+
+Use the release-generated Menu 7 commands and status/log outputs instead of deleting state or starting a new ad-hoc upgrade.
+
+## Completion boundary
+
+Ubuntu 24.04 success is **not** the same as full DP upgrade success. Phase 1 can complete while Phase 2 has not started.
+
+Do not return the DP to service until Phase 2 and post-upgrade validation are complete.
