@@ -1,0 +1,56 @@
+---
+title: "HTTP Distribution & Readiness"
+description: "Publish prepared files through nginx and verify the live artifacts before any DP upgrade begins."
+---
+
+# HTTP Distribution & Readiness
+
+After Menu 2 completes successfully, publish and validate the prepared content.
+
+## Menu 3 — Enable HTTP Distribution
+
+This is an active nginx configuration and validation step. It:
+
+- validates the prepared directory layout
+- installs/enables the nginx site
+- runs `nginx -t`
+- starts or reloads nginx
+- performs live HTTP checks
+
+The DP-side path is intentionally simple:
+
+```text
+DP host  --->  http://<MIRROR_SERVER_IP>:80
+```
+
+## Menu 4 — Verify Upgrade Readiness
+
+Menu 4 checks the live HTTP files required by the selected Preparation Mode.
+
+Possible readiness states are:
+
+```text
+PASS
+NOT VERIFIED
+NOT READY
+FAIL
+```
+
+Only `PASS` is the normal go-ahead condition for moving to DP-side upgrade commands.
+
+## Why readiness can become stale
+
+A previous `[COMPLETED]` marker can be invalidated when configuration, artifacts, HTTP state, or the Mirror Server IP changes.
+
+If you deliberately reinstall after a source update or change the server IP, complete the required preparation/publish/readiness steps again.
+
+## Final operator gate
+
+Before opening Menu 7, confirm:
+
+- Menu 2 completed successfully
+- nginx distribution is enabled
+- Menu 4 reports `PASS`
+- the configured Mirror Server IP is the address the target DP hosts will use
+
+Then generate fresh DP-side commands from Menu 7.
