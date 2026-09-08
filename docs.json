@@ -1,8 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "oak",
-  "name": "DP OS Upgrade",
-  "description": "Operator documentation for upgrading Stellar Cyber Data Processor systems from Ubuntu 16.04 to Ubuntu 24.04 and completing DP bringup on Ubuntu 24.04.",
+  "name": "DP Ubuntu Upgrade Mirror Manager",
+  "description": "Operator documentation for preparing a local Mirror Server, upgrading Stellar Cyber Data Processor systems to Ubuntu 24.04, and completing DP 6.6.0 Phase 2 bringup.",
   "colors": {
     "primary": "#16A34A"
   },
@@ -12,36 +12,50 @@
         "tab": "Guide",
         "groups": [
           {
-            "group": "Overview",
+            "group": "Start Here",
             "pages": [
               "index",
+              "getting-started/quickstart",
               "getting-started/upgrade-path",
+              "getting-started/preparation-modes",
+              "getting-started/requirements",
               "getting-started/prerequisites"
             ]
           },
           {
-            "group": "Phase 1 — Ubuntu OS Upgrade",
+            "group": "Mirror Manager",
             "pages": [
-              "phase-1-os-upgrade/overview",
-              "phase-1-os-upgrade/direct-internet",
-              "phase-1-os-upgrade/cache-server",
-              "phase-1-os-upgrade/offline-mirror"
+              "mirror-manager/install",
+              "mirror-manager/configuration",
+              "mirror-manager/download-prepare",
+              "mirror-manager/http-readiness",
+              "mirror-manager/client-commands"
             ]
           },
           {
-            "group": "Phase 2 — DP Bringup",
+            "group": "DP Upgrade",
             "pages": [
-              "phase-2-dp-bringup/overview",
-              "phase-2-dp-bringup/online",
-              "phase-2-dp-bringup/dark-site",
-              "phase-2-dp-bringup/cluster-workers"
+              "dp-upgrade/full-os-upgrade",
+              "dp-upgrade/phase2-only",
+              "dp-upgrade/clusters"
             ]
           },
           {
             "group": "Operations",
             "pages": [
+              "operations/move-dark-site",
+              "operations/retry-recovery",
               "operations/validation",
               "operations/troubleshooting"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/network",
+              "reference/storage-layout",
+              "reference/status-logs",
+              "reference/current-vs-legacy"
             ]
           }
         ]
