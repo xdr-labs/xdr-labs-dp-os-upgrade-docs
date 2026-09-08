@@ -9,34 +9,16 @@ A Mirror Server can be prepared and tested in an Internet-connected environment,
 
 After the move:
 
-1. boot the Mirror Server and configure its final dark-site IP address
-2. open the GUI:
+1. boot the Mirror Server and configure its final dark-site IP
+2. open `sudo ubuntu-offline-mirror mirror-manager`
+3. update the **Mirror Server IP** in Menu 1 and save
+4. run **Menu 2 → Menu 3 → Menu 4 → Menu 7**
+5. confirm Menu 4 reports `PASS`
+6. use only the newly generated Menu 7 commands
 
-```bash
-sudo ubuntu-offline-mirror mirror-manager
-```
-
-3. open **Menu 1 — Configuration**
-4. update the **Mirror Server IP** and save
-5. run:
-
-```text
-2  Download and Prepare Upgrade Files
-3  Enable HTTP Distribution
-4  Verify Upgrade Readiness
-7  Show DP Client Upgrade Commands
-```
-
-6. confirm Menu 4 reports `PASS`
-7. use only the newly generated Menu 7 commands
-
-## Why Menu 2 is repeated
-
-The current implementation reuses already prepared local artifacts where they remain valid, but it rebuilds client-side files that embed the Mirror Server IP.
+Menu 2 reuses prepared local artifacts where valid but rebuilds client-side files that embed the Mirror Server IP.
 
 Do not reuse commands generated before the IP change.
-
-## Dark-site network requirement
 
 Once the prepared server is in the restricted environment, DP hosts only need to reach:
 
@@ -44,4 +26,4 @@ Once the prepared server is in the restricted environment, DP hosts only need to
 http://<FINAL_MIRROR_SERVER_IP>:80
 ```
 
-The DP hosts do not need direct Cloudflare R2 or ACPS access.
+DP hosts do not need direct Cloudflare R2 or ACPS access.

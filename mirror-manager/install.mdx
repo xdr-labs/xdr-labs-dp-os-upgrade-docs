@@ -5,8 +5,6 @@ description: "Install the current runtime on Ubuntu 24.04 and understand what th
 
 # Install Mirror Manager
 
-## Install
-
 ```bash
 sudo apt-get update
 sudo apt-get install -y git
@@ -16,7 +14,7 @@ cd ubuntu-mirror-automation
 sudo ./install.sh
 ```
 
-For non-interactive or CI bootstrap:
+For non-interactive bootstrap:
 
 ```bash
 sudo ./install.sh --non-interactive
@@ -24,33 +22,16 @@ sudo ./install.sh --non-interactive
 
 ## What the installer does
 
-The installer currently:
+The installer validates Ubuntu 24.04 LTS amd64, root/systemd/apt, installs nginx and required utilities, creates mirror directories without formatting disks, installs runtime files under `/usr/local/lib/ubuntu-mirror`, installs `ubuntu-offline-mirror` under `/usr/local/bin`, and opens the GUI on an interactive TTY.
 
-1. validates Ubuntu 24.04 LTS amd64, root, systemd, and apt
-2. installs required packages such as nginx, whiptail/dialog, curl, and Python
-3. creates the mirror directories without formatting disks
-4. installs the runtime under `/usr/local/lib/ubuntu-mirror`
-5. installs `ubuntu-offline-mirror` under `/usr/local/bin`
-6. installs the nginx base configuration
-7. opens the GUI when an interactive TTY is available
+It does **not** start the large R2 or ACPS downloads. Those begin only from Menu 2.
 
-The installer does **not** start the large R2 or ACPS downloads. Those begin only from **Menu 2 — Download and Prepare Upgrade Files**.
-
-## Open the GUI later
+## Reopen the GUI
 
 ```bash
 sudo ubuntu-offline-mirror mirror-manager
 ```
 
-After an SSH disconnect, reopen the GUI with this command. Do not rerun `install.sh` just to reopen an existing installation.
+Do not rerun `install.sh` merely because SSH disconnected.
 
-## Updating the application
-
-When you deliberately update the source repository:
-
-```bash
-git pull
-sudo ./install.sh
-```
-
-A reinstall after a source update can rebuild or republish client artifacts and make previous readiness state stale. Re-run the required Mirror Manager steps when the application instructs you to do so.
+After an intentional `git pull`, rerun `sudo ./install.sh` to deploy the new runtime, then repeat any workflow steps that the application marks stale.

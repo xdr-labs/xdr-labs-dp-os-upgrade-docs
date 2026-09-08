@@ -60,6 +60,56 @@
           }
         ]
       }
+    ],
+    "groups": [
+      {
+        "group": "Start Here",
+        "expanded": true,
+        "pages": [
+          "index",
+          "getting-started/quickstart",
+          "getting-started/upgrade-path",
+          "getting-started/preparation-modes",
+          "getting-started/requirements",
+          "getting-started/prerequisites"
+        ]
+      },
+      {
+        "group": "Mirror Manager",
+        "pages": [
+          "mirror-manager/install",
+          "mirror-manager/configuration",
+          "mirror-manager/download-prepare",
+          "mirror-manager/http-readiness",
+          "mirror-manager/client-commands"
+        ]
+      },
+      {
+        "group": "DP Upgrade",
+        "pages": [
+          "dp-upgrade/full-os-upgrade",
+          "dp-upgrade/phase2-only",
+          "dp-upgrade/clusters"
+        ]
+      },
+      {
+        "group": "Operations",
+        "pages": [
+          "operations/move-dark-site",
+          "operations/retry-recovery",
+          "operations/validation",
+          "operations/troubleshooting"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/network",
+          "reference/storage-layout",
+          "reference/status-logs",
+          "reference/current-vs-legacy"
+        ]
+      }
     ]
   }
 }

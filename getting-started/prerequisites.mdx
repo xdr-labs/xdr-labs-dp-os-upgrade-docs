@@ -9,35 +9,21 @@ Complete these checks before preparing or executing a production DP upgrade.
 
 ## Mirror Server
 
-Use a clean Ubuntu 24.04 LTS amd64 server with:
-
-- 2 vCPU minimum; 4 vCPU recommended
-- 4 GB RAM minimum; 8 GB recommended
-- 100 GB total disk for the current artifact set
-- a stable IPv4 address reachable by all target DPs
-- outbound HTTPS to the current GitHub, R2, ACPS, and Ubuntu bootstrap destinations
-
-The Mirror Server must be able to serve DP hosts over TCP 80.
+Use a clean Ubuntu 24.04 LTS amd64 server with a stable IPv4 address, enough CPU/RAM/disk for the current baseline, outbound access for preparation, and TCP 80 reachability from all target DPs.
 
 ## Credentials
 
-Have the following available before Menu 2:
+Have the following ready before Menu 2:
 
 - ACPS username
 - ACPS password
 - common `aella` worker SSH password when DL/DA workers are configured
 
-Do not place passwords or tokens into documentation, public tickets, or shell history unnecessarily.
-
 ## DP snapshots
 
-Create a full hypervisor snapshot of **every DP VM** before the destructive upgrade.
-
-The project does not provide supported OS or DP-runtime rollback commands. Snapshot restore is the recovery method when a destructive failure cannot be safely recovered in place.
+Create a full hypervisor snapshot of **every DP VM** before destructive execution. The project does not provide supported OS or DP-runtime rollback commands.
 
 ## Choose the correct mode
-
-Confirm the current DP OS state and select:
 
 - **Full OS Upgrade + Phase 2** for supported DPs on Ubuntu 16.04
 - **Phase 2 Only** for supported DPs already on Ubuntu 24.04
@@ -46,21 +32,8 @@ The current target is DP **6.6.0**.
 
 ## Cluster information
 
-For DL/DA clusters, collect:
-
-- DL worker management IPs
-- DA worker management IPs
-- common `aella` worker password
-- normal master-to-worker connectivity
-
-Do not include master IPs in the worker lists.
+For DL/DA clusters, collect the DL worker management IPs, DA worker management IPs, and common `aella` worker password. Do not include master IPs in the worker lists.
 
 ## Final pre-execution gate
 
-Do not start DP-side commands until:
-
-1. Configuration is saved
-2. Download and Prepare completed
-3. HTTP Distribution is enabled
-4. Verify Upgrade Readiness reports `PASS`
-5. Menu 7 commands were generated from the current configuration
+Do not start DP-side commands until Configuration is saved, Download and Prepare completed, HTTP Distribution is enabled, Verify Upgrade Readiness reports `PASS`, and Menu 7 commands were generated from the current configuration.
