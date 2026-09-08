@@ -1,0 +1,54 @@
+---
+title: "Retry & Recovery"
+description: "Resume Mirror Manager downloads safely, preserve partial files, and use snapshot recovery for destructive DP failures."
+---
+
+# Retry & Recovery
+
+## Mirror Manager interrupted by SSH disconnect
+
+Reconnect and reopen the existing installation:
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+Do not reinstall merely because the terminal disconnected.
+
+- If Menu 2 is still running, wait for the active process.
+- If Menu 2 completed, continue from the first incomplete menu step.
+- If configuration and the Mirror Server IP did not change, already valid steps do not need to be repeated unnecessarily.
+
+Running Menu 4 again immediately before the DP upgrade is a useful final readiness check.
+
+## Interrupted downloads
+
+Run Menu 2 again. The current workflow reuses valid data and supports partial download resume.
+
+Do not delete ACPS `.part` files just to restart; those files contain resumable download state.
+
+## Useful Mirror Server diagnostics
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+## DP OS-upgrade state
+
+The Phase 1 implementation uses durable state, command journals, integrity checks, and a central state machine. It is designed to fail closed when evidence is inconsistent.
+
+Do not delete `/opt/aelladata/os-upgrade` or invent a fresh install over orphaned evidence merely to clear an error.
+
+For low-level Phase 1 recovery, use the diagnostics and recovery action recommended by the current release tooling. Examples in the engineering implementation include lock recovery, false reboot-required recovery, and resume-stage recovery, but operator execution should follow the release-generated procedure.
+
+## Rollback
+
+The project does not implement OS or DP-runtime rollback commands.
+
+```text
+RECOVERY_METHOD=HYPERVISOR_SNAPSHOT
+```
+
+If destructive recovery cannot be completed safely, restore the approved pre-upgrade hypervisor snapshot rather than attempting an unvalidated package or runtime downgrade.
