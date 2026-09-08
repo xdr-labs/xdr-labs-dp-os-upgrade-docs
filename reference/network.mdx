@@ -1,0 +1,45 @@
+---
+title: "Network Reference"
+description: "Current Mirror Server and DP connectivity requirements for the active workflow."
+---
+
+# Network Reference
+
+## Data path
+
+```text
+Cloudflare R2 ─────┐
+                   ├── HTTPS ──> Mirror Server ── HTTP/TCP 80 ──> DP hosts
+ACPS ──────────────┘
+```
+
+## Mirror Server outbound
+
+The Mirror Server needs outbound access for:
+
+| Destination | Purpose |
+| --- | --- |
+| GitHub endpoints | Initial clone and intentional source updates |
+| `https://xdrsolutions.uk` | Cloudflare R2 OS Core package in Full mode |
+| ACPS endpoint | DP 6.6.0 Phase 2 artifacts |
+| Ubuntu package repositories | Mirror Server bootstrap/package installation |
+
+## DP hosts
+
+The active offline/mirror workflow requires DP hosts to reach only:
+
+```text
+TCP 80 -> <MIRROR_SERVER_IP>
+```
+
+DP hosts do not need direct Cloudflare R2 or ACPS access.
+
+Cluster members also require their normal internal DP-to-DP connectivity and master-to-worker SSH path for final orchestration.
+
+## IP changes
+
+The Mirror Server IP is embedded into generated client artifacts. After changing it, update Configuration and regenerate/publish/verify the client files before using Menu 7.
+
+## Historical note
+
+Older runbooks describe direct Canonical access, `apt-cacher-ng` on TCP 3142, and full `apt-mirror` servers. Those are not the active Mirror Manager data path documented here.
