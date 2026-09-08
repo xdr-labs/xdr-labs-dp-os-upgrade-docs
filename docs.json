@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "oak",
+  "theme": "mint",
   "name": "DP Ubuntu Upgrade Mirror Manager",
   "description": "Operator documentation for preparing a local Mirror Server, upgrading Stellar Cyber Data Processor systems to Ubuntu 24.04, and completing DP 6.6.0 Phase 2 bringup.",
   "colors": {
