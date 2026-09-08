@@ -1,88 +1,66 @@
 ---
 title: "Prerequisites"
-description: "Safety, system, storage, time, shell, and network checks required before a DP OS upgrade."
+description: "Pre-upgrade checks for the Mirror Server, DP snapshots, connectivity, credentials, and cluster configuration."
 ---
 
 # Prerequisites
 
-Complete these checks before starting either phase.
+Complete these checks before preparing or executing a production DP upgrade.
 
-## Backup and rollback
+## Mirror Server
 
-Take a **VM snapshot or full backup of every DP node** immediately before the upgrade. The OS upgrade is destructive; restoring a snapshot or backup is the primary rollback method if the upgrade fails.
+Use a clean Ubuntu 24.04 LTS amd64 server with:
 
-For clusters, protect the master and every worker node.
+- 2 vCPU minimum; 4 vCPU recommended
+- 4 GB RAM minimum; 8 GB recommended
+- 100 GB total disk for the current artifact set
+- a stable IPv4 address reachable by all target DPs
+- outbound HTTPS to the current GitHub, R2, ACPS, and Ubuntu bootstrap destinations
 
-## Login shell
+The Mirror Server must be able to serve DP hosts over TCP 80.
 
-The `aella` user must use `/bin/bash` before the upgrade or Py3 bringup.
+## Credentials
 
-```bash
-chsh -s /bin/bash aella
-chsh -s /bin/bash root
-```
+Have the following available before Menu 2:
 
-Verify with:
+- ACPS username
+- ACPS password
+- common `aella` worker SSH password when DL/DA workers are configured
 
-```bash
-getent passwd aella
-```
+Do not place passwords or tokens into documentation, public tickets, or shell history unnecessarily.
 
-Do not proceed if the login still lands in the restricted `aella_cli` shell.
+## DP snapshots
 
-## Time synchronization
+Create a full hypervisor snapshot of **every DP VM** before the destructive upgrade.
 
-Accurate time is mandatory. APT can reject Ubuntu release metadata when the clock is skewed.
+The project does not provide supported OS or DP-runtime rollback commands. Snapshot restore is the recovery method when a destructive failure cannot be safely recovered in place.
 
-Check the active time service and synchronization state:
+## Choose the correct mode
 
-```bash
-systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
-timedatectl
-```
+Confirm the current DP OS state and select:
 
-If `ntpsec` is installed, also verify a synchronized peer:
+- **Full OS Upgrade + Phase 2** for supported DPs on Ubuntu 16.04
+- **Phase 2 Only** for supported DPs already on Ubuntu 24.04
 
-```bash
-ntpq -p
-```
+The current target is DP **6.6.0**.
 
-## Disk and compute
+## Cluster information
 
-For the OS upgrade, reserve enough free space for package downloads and each LTS transition.
+For DL/DA clusters, collect:
 
-For offline 6.5.0 Py3 bringup, the source runbook specifies:
+- DL worker management IPs
+- DA worker management IPs
+- common `aella` worker password
+- normal master-to-worker connectivity
 
-- at least **70 GB free under `/opt/aelladata`**
-- at least **20 GB free on `/`**
-- sufficient hypervisor datastore space for thin-provisioned VMs
-- **100 GB+ RAM** for DL master / AIO
-- **80 GB+ RAM** for DA master and workers
-- **32 CPU cores recommended**, 16 minimum
+Do not include master IPs in the worker lists.
 
-Validate the actual platform requirements before customer execution.
+## Final pre-execution gate
 
-## Network and DNS
+Do not start DP-side commands until:
 
-Confirm:
-
-- hostnames are unique and resolvable inside the cluster
-- static management addresses are configured
-- DNS can resolve the required Ubuntu and internal hostnames
-- NTP is reachable
-- DP-to-DP cluster connectivity is available
-- MTU is consistent end-to-end
-
-For dark-site environments, do not assume Internet connectivity is required. Select either a cache-server path or a full local mirror according to the deployment design.
-
-## MTU check for clusters
-
-Use MTU 1500 unless jumbo frames are verified across the entire path between all DP nodes.
-
-A simple probe is:
-
-```bash
-ping -M do -s 1472 <peer-dp-ip>
-```
-
-Do not enable jumbo MTU based only on the host configuration; the complete switch path must support it.
+1. Configuration is saved
+2. Download and Prepare completed
+3. HTTP Distribution is enabled
+4. Verify Upgrade Readiness reports `PASS`
+5. Menu 7 commands were generated from the current configuration
