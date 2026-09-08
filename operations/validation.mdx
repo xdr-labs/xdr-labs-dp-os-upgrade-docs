@@ -1,11 +1,11 @@
 ---
 title: "Post-Upgrade Validation"
-description: "Validate Ubuntu 24.04, DP 6.5.0, cluster readiness, and service health after bringup."
+description: "Validate Ubuntu 24.04, DP 6.6.0, cluster readiness, services, and the final operator state."
 ---
 
 # Post-Upgrade Validation
 
-Do not close the maintenance window immediately after the script exits. Validate both the operating system and the DP application state.
+Do not close the maintenance window when the last command merely exits successfully. Validate both the operating system and the DP application state.
 
 ## Operating system
 
@@ -14,65 +14,73 @@ cat /etc/os-release
 uname -r
 ```
 
-Confirm Ubuntu 24.04 is active and the node rebooted into the expected kernel.
+Confirm the node is running Ubuntu 24.04 and the expected kernel.
 
 ## DP version and status
 
-From the DP CLI, verify the target version and overall readiness:
+From the DP CLI, verify the target release and platform state:
 
 ```text
 show version
 show status
 ```
 
-For a successful 6.5.0 bringup, expect the version to report `6.5.0` and role-specific status checks to indicate the platform is ready.
+The current Mirror Manager target is **DP 6.6.0**.
 
-## Time and DNS
+## NTP and DNS
 
-Validate time synchronization and name resolution again after the upgrade:
+Validate time synchronization and DNS after the upgrade. Use the commands appropriate to the DP build, for example:
 
 ```bash
 timedatectl
 systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
 ```
 
-If `ntpsec` is used:
+When `ntpsec` is used:
 
 ```bash
 ntpq -p
 ```
 
-## Cluster validation
+Investigate an unsynchronized clock before returning the DP to service.
 
-For multi-node deployments, check that all expected nodes are present and ready:
+## Cluster nodes
+
+For multi-node deployments:
 
 ```bash
 kubectl get nodes -o wide
 ```
 
-Validate role-specific labels and cluster networking as required by the release procedure.
+Confirm every expected DL/DA master and worker is present and Ready, then verify release-specific labels and cluster networking.
 
-## Service and log checks
+## Application checks
 
-Review the final sections of both upgrade logs:
+At minimum verify:
 
-```bash
-tail -100 /var/log/aella/auto_os_upgrade.log
-tail -100 /var/log/aella/aella_py3_bringup.log
-```
-
-Look for the documented completion/validation result and investigate any warning or failed check before returning the system to service.
-
-## Functional checks
-
-At minimum confirm:
-
-- all expected DP nodes are ready
-- expected pods/services are running
+- expected DP version is 6.6.0
+- all expected nodes are ready
+- required pods and host services are running
 - DNS is configured
 - NTP is synchronized
 - licensing/OTP state is valid where applicable
 - DL/DA role-specific services are healthy
 - the Web UI and normal DP operations are reachable
 
-For production upgrades, keep the pre-upgrade snapshot until the agreed post-upgrade observation period is complete.
+## Logs and evidence
+
+On the Mirror Server:
+
+```bash
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+On a DP performing Phase 1, preserve the upgrade evidence under:
+
+```text
+/var/log/aella/auto_os_upgrade.log
+/opt/aelladata/os-upgrade/
+```
+
+Investigate any warning, blocked state, failed check, or unexpected version before removing the pre-upgrade snapshot.
