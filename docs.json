@@ -6,6 +6,7 @@
   "colors": {
     "primary": "#16A34A"
   },
+  "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
