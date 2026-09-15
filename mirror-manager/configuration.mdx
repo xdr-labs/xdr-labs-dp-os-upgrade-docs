@@ -5,46 +5,32 @@ description: "Configure preparation mode, server IP, ACPS access, and cluster wo
 
 # Configuration
 
-Open **Menu 1 — Configuration** before downloading any upgrade files.
-
-## Required values
+Open **Menu 1 — Configuration** before downloading upgrade files.
 
 Set and save:
 
-1. **Preparation Mode**
-2. **Mirror Server IP**
-3. **ACPS Username**
-4. **ACPS Password**
-5. **DL Worker IP addresses**
-6. **DA Worker IP addresses**
-7. **Worker SSH Password (aella)**
-8. **Test ACPS Connection**
-9. **Save Configuration**
+1. Preparation Mode
+2. Mirror Server IP
+3. ACPS Username
+4. ACPS Password
+5. DL Worker IP addresses
+6. DA Worker IP addresses
+7. Worker SSH Password (`aella`)
+8. Test ACPS Connection
+9. Save Configuration
 
-The worker fields are required only for clustered deployments.
+Worker fields are needed only for clustered deployments.
 
 ## Mirror Server IP
 
-The GUI may suggest an address, but auto-detection is only a suggestion. Confirm an active IPv4 address that every DP host can actually reach.
+The GUI may suggest an address, but auto-detection is only a suggestion. Confirm an active IPv4 address that every target DP can reach. The saved IP is embedded into generated client artifacts.
 
-The saved IP is embedded into generated client artifacts. If the Mirror Server IP changes, regenerate the client files before using Menu 7 commands.
+If the Mirror Server IP changes, regenerate the client files before using Menu 7 commands.
 
 ## Cluster configuration
 
-For DL/DA clusters:
+Enter DL workers only in the DL list and DA workers only in the DA list; do not include master IPs. Configure one common `aella` worker SSH password. For AIO/single-node/master-only deployments, leave both worker lists empty.
 
-- enter only DL worker IPs in the DL worker list; do not include the DL master
-- enter only DA worker IPs in the DA worker list; do not include the DA master
-- configure one common `aella` worker SSH password used by each master to reach its own workers
+## Fixed workflow values
 
-For AIO, single-node, or master-only deployments, leave both worker lists empty. The worker password is not required in that case.
-
-## Fixed values
-
-The current application treats these as fixed workflow values:
-
-- Phase 2 target: **6.6.0**
-- ACPS endpoint: application-controlled
-- Full-mode OS Core source: Cloudflare R2
-
-The starting DP version is detected on the DP host and is not entered in Mirror Manager configuration.
+The current application uses DP **6.6.0** as the fixed Phase 2 target, ACPS as the Phase 2 source, and Cloudflare R2 as the Full-mode OS Core source.

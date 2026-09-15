@@ -18,54 +18,22 @@ Use a clean **Ubuntu 24.04 LTS amd64** system.
 | DP → Mirror Server | TCP **80** |
 | Mirror Server outbound | HTTPS to GitHub, Ubuntu bootstrap repositories, Cloudflare R2, and ACPS |
 
-Current artifact sizes are approximately:
+Current data sizes are approximately 3.4 GiB for OS Core, 28.2 GiB for the DP 6.6.0 bundle, and roughly 70 GiB peak for a fresh Download and Prepare operation including build overhead and reserve.
 
-- OS Core / selective mirror: **3.4 GiB**
-- DP 6.6.0 Phase 2 bundle: **28.2 GiB**
-- fresh Download and Prepare peak: approximately **70 GiB** including build overhead and reserve
-
-The application performs a free-space preflight. The 100 GB value is the validated baseline for the current artifact set, not a guarantee for future releases.
+The 100 GB value is the validated baseline for the current artifacts, not a permanent guarantee for future releases.
 
 ## Credentials
 
-The Mirror Manager requires:
-
-- ACPS username and password
-- one common `aella` worker SSH password when worker nodes are configured
-
-ACPS credentials are stored root-owned with mode `600` in:
-
-```text
-/etc/ubuntu-mirror/dp-upgrade-mirror.conf
-```
-
-Application logs redact credentials.
-
-## Network requirements
-
-Mirror Server outbound access is required for:
-
-- GitHub for initial clone and source updates
-- `https://xdrsolutions.uk` for the R2 OS Core package in Full mode
-- the configured/fixed ACPS endpoint for Phase 2 artifacts
-- Ubuntu repositories required to bootstrap the Mirror Server itself
-
-DP hosts only need access to:
-
-```text
-http://<MIRROR_SERVER_IP>:80
-```
-
-DP hosts do not require direct R2 or ACPS connectivity.
+The Mirror Manager requires ACPS credentials and, when workers are configured, one common `aella` worker SSH password. Credentials are stored root-owned with mode `600` and are redacted from application logs.
 
 ## DP safety prerequisites
 
-Before running destructive DP commands:
+Before destructive execution:
 
 - create a full hypervisor snapshot of every DP VM
-- verify the Mirror Server readiness result is `PASS`
-- use the current Menu 7 commands generated for the active Mirror Server IP
-- confirm the maintenance window is large enough to complete the required LTS hops and Phase 2
-- preserve `/opt/aelladata` and do not treat intermediate Ubuntu releases as rollback points
+- verify Mirror Manager readiness is `PASS`
+- use current Menu 7 commands
+- preserve `/opt/aelladata`
+- do not treat intermediate Ubuntu releases as rollback points
 
-The supported recovery method for destructive failure is the hypervisor snapshot.
+The supported destructive recovery method is the hypervisor snapshot.

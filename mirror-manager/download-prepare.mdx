@@ -5,48 +5,22 @@ description: "Prepare the selective OS Core and DP 6.6.0 Phase 2 bundle with res
 
 # Download and Prepare Upgrade Files
 
-Run **Menu 2 — Download and Prepare Upgrade Files** after configuration is saved.
+Run **Menu 2** after Configuration is saved.
 
 ## Full OS Upgrade + Phase 2
 
-Menu 2:
-
-- verifies and reuses a valid existing OS Core selective tree when possible
-- otherwise downloads the OS Core package from Cloudflare R2 and materializes the selective mirror
-- downloads or reuses DP 6.6.0 Phase 2 artifacts from ACPS
-- verifies supplied checksums
-- builds the final DP 6.6.0 bundle
-- prepares the DP client artifacts for the configured Mirror Server IP
+Menu 2 verifies/reuses an existing OS Core selective tree when valid, otherwise downloads the OS Core package from Cloudflare R2, downloads or reuses DP 6.6.0 Phase 2 artifacts from ACPS, verifies checksums, builds the final Phase 2 bundle, and prepares DP client artifacts for the configured Mirror Server IP.
 
 ## Phase 2 Only
 
-Menu 2 skips R2 and all OS-hop preparation. It downloads/reuses and prepares only the DP 6.6.0 Phase 2 artifacts.
-
-## Long-running operations
-
-Large downloads, SHA256 checks, and tar operations can take several minutes. The current workflow emits progress or heartbeat messages during long operations. Do not assume the process is hung while those messages continue.
+Menu 2 skips R2 and OS-hop preparation and prepares only the DP 6.6.0 Phase 2 artifacts.
 
 ## Interrupted downloads
 
-The preparation flow is designed to reuse valid local data:
+The workflow reuses valid local data and supports partial resume. Completed ACPS files, partial `.part` files, valid OS Core data, and a valid final Phase 2 bundle can be reused.
 
-- R2 partial data can resume
-- ACPS partial data can resume
-- completed ACPS files are reused
-- a valid existing OS Core tree is reused
-- a valid existing final Phase 2 bundle is reused
+Do **not** delete ACPS `.part` files merely to retry.
 
-Do **not** delete ACPS `.part` files just to retry; they are resume data.
+Long SHA256/tar operations emit progress or heartbeat messages. Do not assume they are hung while those messages continue.
 
-After an interruption, reopen Mirror Manager and run Menu 2 again. If another Menu 2 process is still active, wait for it instead of starting a second copy.
-
-## Success gate
-
-After Menu 2 completes, continue with:
-
-```text
-3  Enable HTTP Distribution
-4  Verify Upgrade Readiness
-```
-
-A completed download alone is not sufficient authorization to start the DP upgrade.
+After Menu 2 succeeds, continue with Menu 3 and Menu 4. Download completion alone is not permission to start a DP upgrade.

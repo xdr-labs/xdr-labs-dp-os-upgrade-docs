@@ -14,11 +14,11 @@ cat /etc/os-release
 uname -r
 ```
 
-Confirm the node is running Ubuntu 24.04 and the expected kernel.
+Confirm Ubuntu 24.04 and the expected kernel.
 
 ## DP version and status
 
-From the DP CLI, verify the target release and platform state:
+From the DP CLI:
 
 ```text
 show version
@@ -29,20 +29,13 @@ The current Mirror Manager target is **DP 6.6.0**.
 
 ## NTP and DNS
 
-Validate time synchronization and DNS after the upgrade. Use the commands appropriate to the DP build, for example:
+Validate time synchronization and DNS. For example:
 
 ```bash
 timedatectl
 systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
+ntpq -p 2>/dev/null || true
 ```
-
-When `ntpsec` is used:
-
-```bash
-ntpq -p
-```
-
-Investigate an unsynchronized clock before returning the DP to service.
 
 ## Cluster nodes
 
@@ -52,35 +45,10 @@ For multi-node deployments:
 kubectl get nodes -o wide
 ```
 
-Confirm every expected DL/DA master and worker is present and Ready, then verify release-specific labels and cluster networking.
+Confirm every expected DL/DA master and worker is Ready and verify release-specific labels/networking.
 
 ## Application checks
 
-At minimum verify:
+At minimum verify expected version, node readiness, required pods/services, DNS, NTP, licensing/OTP where applicable, DL/DA role services, Web UI reachability, and normal DP operations.
 
-- expected DP version is 6.6.0
-- all expected nodes are ready
-- required pods and host services are running
-- DNS is configured
-- NTP is synchronized
-- licensing/OTP state is valid where applicable
-- DL/DA role-specific services are healthy
-- the Web UI and normal DP operations are reachable
-
-## Logs and evidence
-
-On the Mirror Server:
-
-```bash
-ls -lt /var/log/ubuntu-mirror-automation/
-cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
-```
-
-On a DP performing Phase 1, preserve the upgrade evidence under:
-
-```text
-/var/log/aella/auto_os_upgrade.log
-/opt/aelladata/os-upgrade/
-```
-
-Investigate any warning, blocked state, failed check, or unexpected version before removing the pre-upgrade snapshot.
+Preserve Mirror Manager and DP Phase 1 logs/evidence until the post-upgrade observation period is complete.

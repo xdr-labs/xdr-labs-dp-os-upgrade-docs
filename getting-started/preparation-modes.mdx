@@ -9,32 +9,17 @@ The Mirror Manager supports two operator-facing preparation modes.
 
 ## Full OS Upgrade + Phase 2
 
-Use this when the DP is still on Ubuntu 16.04 and must reach Ubuntu 24.04 before the final DP bringup.
-
-The OS path is:
+Use this when the DP is still on Ubuntu 16.04 and must reach Ubuntu 24.04 before final bringup.
 
 ```text
-16.04 Xenial
-  → 18.04 Bionic
-  → 20.04 Focal
-  → 22.04 Jammy
-  → 24.04 Noble
+16.04 Xenial → 18.04 Bionic → 20.04 Focal → 22.04 Jammy → 24.04 Noble
 ```
 
-After Noble is reached, Phase 2 brings the DP to **6.6.0**.
-
-In this mode the Mirror Server prepares both:
-
-- the selective Ubuntu OS Core tree from Cloudflare R2
-- the DP 6.6.0 Phase 2 bundle from ACPS
+After Noble is reached, Phase 2 brings the DP to **6.6.0**. In this mode the Mirror Server prepares both the selective Ubuntu OS Core tree from Cloudflare R2 and the DP 6.6.0 Phase 2 bundle from ACPS.
 
 ## Phase 2 Only
 
-Use this for supported DPs that are already on Ubuntu 24.04 but still require DP 6.6.0 bringup.
-
-This mode skips R2 and OS-hop mirror preparation and prepares only the Phase 2 artifacts.
-
-## Decision table
+Use this for supported DPs that are already on Ubuntu 24.04 but still require DP 6.6.0 bringup. This mode skips R2 and OS-hop mirror preparation and prepares only the Phase 2 artifacts.
 
 | Starting state | Mode | Final state |
 | --- | --- | --- |
@@ -43,4 +28,4 @@ This mode skips R2 and OS-hop mirror preparation and prepares only the Phase 2 a
 | Supported DP 6.2–6.5 on Ubuntu 24.04 | Phase 2 Only | DP 6.6.0 |
 | Healthy DP 6.6.0 on Ubuntu 24.04 | Normally no upgrade | No change |
 
-The Phase 2 target is fixed at **6.6.0** in the current application. Do not use the older 6.5.0 bringup instructions from historical runbooks for the active Mirror Manager workflow.
+The current Phase 2 target is fixed at **6.6.0**. Older 6.5.0 runbooks are historical and should not be mixed with this workflow.

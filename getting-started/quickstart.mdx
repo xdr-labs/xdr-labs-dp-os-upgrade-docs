@@ -28,23 +28,11 @@ Do not rerun `install.sh` just to reopen the GUI.
 
 ## 2. Configure the project
 
-Open **Menu 1 — Configuration** and set:
-
-- Preparation Mode
-- Mirror Server IP
-- ACPS Username
-- ACPS Password
-- DL Worker IP addresses, if applicable
-- DA Worker IP addresses, if applicable
-- Worker SSH Password (`aella`), if workers are configured
-
-Then test the ACPS connection and save the configuration.
-
-For AIO or single-node deployments, leave both worker-IP lists empty.
+Open **Menu 1 — Configuration** and set the Preparation Mode, Mirror Server IP, ACPS credentials, and DL/DA worker settings when applicable. Test the ACPS connection and save.
 
 ## 3. Prepare and publish the files
 
-Run the menus in this order:
+Run:
 
 ```text
 2  Download and Prepare Upgrade Files
@@ -52,30 +40,18 @@ Run the menus in this order:
 4  Verify Upgrade Readiness
 ```
 
-Do not proceed until Menu 4 reports:
-
-```text
-PASS
-```
+Do not proceed until Menu 4 reports `PASS`.
 
 ## 4. Generate the DP commands
 
-Open:
+Open **Menu 7 — Show DP Client Upgrade Commands**. Menu 7 is the authoritative source for DP-side commands for the current configuration and Mirror Server IP.
 
-```text
-7  Show DP Client Upgrade Commands
-```
-
-Menu 7 is the authoritative source for the DP-side commands for the current configuration and Mirror Server IP.
-
-The same output is saved on the Mirror Server at:
+The output is also saved at:
 
 ```text
 /var/log/ubuntu-mirror-automation/dp-client-upgrade-commands.txt
 ```
 
-## 5. Upgrade the DP
+## 5. Upgrade and validate
 
-Follow Menu 7 exactly. For clustered deployments, complete the common staging steps on all target nodes before running the role-specific bringup command on each master.
-
-After the upgrade, validate Ubuntu 24.04, DP 6.6.0, node readiness, services, NTP/DNS, and cluster health before closing the maintenance window.
+Follow Menu 7 exactly. After the upgrade, validate Ubuntu 24.04, DP 6.6.0, cluster readiness, NTP/DNS, services, and the normal DP application state before closing the maintenance window.

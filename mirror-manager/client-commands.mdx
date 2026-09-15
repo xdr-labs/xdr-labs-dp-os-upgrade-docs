@@ -17,28 +17,12 @@ The generated output is also saved at:
 
 ## Cluster execution model
 
-For clustered deployments, the current workflow separates common node preparation from final master orchestration.
+For clustered deployments, common preparation/staging steps run on the DL master, all DL workers, the DA master, and all DA workers. Final bringup is master-driven: the DL master orchestrates its DL workers and the DA master orchestrates its DA workers.
 
-| Steps | Run on |
-| --- | --- |
-| Common steps 1–6 | DL master + all DL workers + DA master + all DA workers |
-| Final DL step | DL master only |
-| Final DA step | DA master only |
+Complete common staging on **all** target nodes before final master orchestration. Do not run the final master step manually on workers.
 
-The exact step numbers shown by Menu 7 can differ by Preparation Mode; follow the generated output.
-
-Key rules:
-
-- complete the common staging/prerequisite steps on **all** target nodes first
-- run final bringup from the DL master using its configured DL workers
-- run final bringup from the DA master using its configured DA workers
-- do not manually run the final master-orchestration step on workers
-- for AIO/single-node, no worker flags or worker password are added
+For AIO/single-node, no worker flags or worker password are added.
 
 ## If the Mirror Server IP changes
 
-Do not reuse previously generated commands. Update the saved Mirror Server IP, rerun the required preparation/publish/readiness steps, and generate a new Menu 7 output.
-
-## Security
-
-Menu 7 may include environment-specific command material. Treat the generated file as operational data and do not publish passwords, tokens, or internal credentials in external tickets or public documentation.
+Do not reuse old commands. Update Configuration, run the required preparation/publish/readiness sequence, and generate fresh Menu 7 output.

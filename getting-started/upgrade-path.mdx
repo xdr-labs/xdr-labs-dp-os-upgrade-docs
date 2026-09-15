@@ -34,12 +34,4 @@ If the supported DP is already on Ubuntu 24.04, skip the OS-hop preparation and 
 | Supported DP 6.2–6.5 on Ubuntu 24.04 | Phase 2 Only | DP 6.6.0 |
 | Healthy DP 6.6.0 on Ubuntu 24.04 | Normally no upgrade | No change |
 
-## Important boundary
-
-Phase 1 completion means Ubuntu reached 24.04. It does **not** mean DP bringup has completed.
-
-Intermediate Ubuntu releases are transition points and may not run the complete DP application stack. Follow the Menu 7 sequence through Noble and Phase 2 before judging final application health.
-
-## Operator rule
-
-Do not manually combine commands from historical 6.5.0 or apt-cacher/full-mirror runbooks with the current Mirror Manager. The installed tool's Menu 7 output is the authoritative operator command set for the active configuration.
+Phase 1 completion means Ubuntu reached 24.04; it does **not** mean DP bringup has completed. Use the installed tool's Menu 7 output as the authoritative operator command set.
