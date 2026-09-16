@@ -1,0 +1,43 @@
+---
+title: "Phase 2 Only"
+description: "이미 Ubuntu 24.04인 지원 DP를 OS Hop 준비 없이 DP 6.6.0으로 Bringup합니다."
+---
+
+# Phase 2 Only
+
+DP가 이미 Ubuntu 24.04이고 현재 DP 6.6.0 Bringup이 필요할 때 **Phase 2 Only**를 사용합니다.
+
+## Mirror Server 동작
+
+이 Mode에서 Menu 2는 다음을 수행합니다.
+
+- Cloudflare R2 OS Core 준비 생략
+- 모든 Ubuntu Hop Mirror Material 생략
+- ACPS에서 DP 6.6.0 Phase 2 Artifact Download/Reuse
+- Checksum 검증
+- Phase 2 Bundle 및 Client File을 Mirror Server에서 Publish
+
+## DP-side 동작
+
+Menu 7은 Ubuntu 16.04 → 24.04 Hop 명령을 제외합니다. 그러나 모든 대상 Node에 필요한 Common Prerequisite/Staging Step은 계속 생성합니다.
+
+Cluster 구성의 최종 Bringup은 Master가 수행합니다.
+
+- DL Master가 DL Worker를 Orchestrate
+- DA Master가 DA Worker를 Orchestrate
+
+AIO 또는 Single-node에서는 생성된 절차를 해당 DP에서 직접 수행합니다.
+
+## 실행 전 확인
+
+OS Hop Chain이 필요하지 않더라도 다음은 반드시 수행합니다.
+
+- 필요한 Hypervisor Snapshot 생성
+- Menu 4가 `PASS`인지 확인
+- 모든 대상 Node가 Ubuntu 24.04인지 확인
+- 현재 Mirror Server IP 기준 최신 Menu 7 출력 사용
+- 생성된 Preflight에서 요구하는 NTP, DNS, Storage, Cluster Connectivity 검증
+
+## Target
+
+현재 Mirror Manager의 Phase 2 Target은 **6.6.0**입니다. 과거 6.5.0 `bringup_py3 --skip-download` Runbook은 Historical Reference이며 현재 Workflow가 아닙니다.
