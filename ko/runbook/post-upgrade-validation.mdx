@@ -1,0 +1,163 @@
+---
+title: "5. 업그레이드 후 검증"
+sidebarTitle: "5. 업그레이드 후 검증"
+description: "Ubuntu 24.04, DP 6.6.0, Cluster Readiness, 서비스, NTP, DNS 및 Recovery Snapshot 정리 조건을 확인합니다."
+---
+
+# 5. 업그레이드 후 검증
+
+마지막 Upgrade 명령이 성공적으로 종료되었다는 이유만으로 Maintenance Window를 종료하지 마십시오. 운영체제와 **DP Application 상태를 모두 검증**해야 합니다.
+
+## 1 — 모든 DP Node에서 Ubuntu 확인
+
+다음을 실행합니다.
+
+```bash
+cat /etc/os-release
+uname -r
+```
+
+업그레이드된 모든 대상 노드가 **Ubuntu 24.04**와 예상 Kernel을 사용하고 있는지 확인합니다.
+
+## 2 — DP Version 및 Status 확인
+
+DP CLI에 진입하여 다음을 실행합니다.
+
+```text
+show version
+show status
+```
+
+현재 Mirror Manager Workflow의 Application Target은 다음과 같습니다.
+
+```text
+DP 6.6.0
+```
+
+`show status`가 필수 Service 누락, Unready Node 또는 Ready가 아닌 Role 상태를 표시하고 있다면 완료된 것으로 판단하지 마십시오.
+
+## 3 — DL/DA Cluster Readiness 확인
+
+Cluster 구성에서는 모든 예상 Node가 존재하고 Ready 상태인지 확인합니다.
+
+```bash
+kubectl get nodes -o wide
+```
+
+다음을 검증합니다.
+
+- DL Master 및 모든 설정된 DL Worker
+- DA Master 및 모든 설정된 DA Worker
+- 필요한 경우 Release별 Label과 Cluster Networking
+- 모든 예상 Pod 및 Host Service
+
+DA Bringup 시작 전에 DL Cluster를 이미 검증했어야 합니다. 이 최종 검사는 전체 Production 상태를 다시 확인하는 단계입니다.
+
+## 4 — NTP 및 DNS 확인
+
+Time Synchronization을 확인합니다.
+
+```bash
+timedatectl
+systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
+```
+
+`ntpsec`을 사용하는 경우:
+
+```bash
+ntpq -p
+```
+
+Clock이 동기화되지 않았다면 DP를 서비스에 복귀시키기 전에 원인을 확인하십시오.
+
+DNS Resolution 및 고객 환경에서 필요한 Network Path도 함께 확인합니다.
+
+## 5 — Application Readiness 확인
+
+최소한 다음을 확인합니다.
+
+- DP Version이 6.6.0
+- 모든 예상 Node가 Ready
+- 필수 Pod가 Running
+- 필수 Host Service가 Ready
+- DNS 설정 정상
+- NTP 동기화 정상
+- 필요한 경우 Licensing/OTP 상태 정상
+- DL/DA Role별 Service 정상
+- Web UI와 일반 DP 운영 기능 접근 가능
+
+`resume` 직후에는 Platform이 안정화될 수 있도록 몇 분간 기다린 후 Service 누락 여부를 판단하십시오.
+
+## 6 — 작업 증적 보존
+
+Mirror Server에서 현재 Status와 Log를 보존합니다.
+
+```bash
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+Phase 1을 수행한 각 DP에서는 다음을 보존합니다.
+
+```text
+/var/log/aella/auto_os_upgrade.log
+/opt/aelladata/os-upgrade/
+```
+
+문제를 Escalation할 때 Failure 또는 State Evidence를 삭제하지 마십시오.
+
+## 7 — Recovery Snapshot 정리
+
+Pre-upgrade/Recovery Snapshot은 다음 조건을 모두 만족할 때까지 유지합니다.
+
+1. 모든 필수 Node에서 Ubuntu 24.04 확인
+2. DP 6.6.0 확인
+3. DL 및 DA Cluster 정상
+4. NTP/DNS와 Application Check PASS
+5. Maintenance/Change 절차 종료 승인
+
+<Warning>
+  Upgrade Script가 성공했다고 해서 Recovery Snapshot을 바로 삭제하지 마십시오. Snapshot 정리는 기술 검증과 Change-Control 승인이 끝난 후 수행하는 최종 작업입니다.
+</Warning>
+
+정리 승인이 완료되면 DP VM의 Hypervisor Snapshot Manager를 엽니다.
+
+<Frame caption="예시: VMware Snapshot Manager 열기">
+  ![업그레이드된 DP의 VMware Manage Snapshots 열기](/images/google-sites/04-offline-dp-upgrade/27.png)
+</Frame>
+
+임시 Pre-upgrade Snapshot을 선택하고 **Delete snapshot**을 선택합니다.
+
+<Frame caption="예시: 삭제할 임시 Pre-upgrade Snapshot 선택">
+  ![삭제할 임시 DP Upgrade Snapshot 선택](/images/google-sites/04-offline-dp-upgrade/28.png)
+</Frame>
+
+승인된 Validation Gate가 통과한 후에만 삭제를 확인합니다.
+
+<Frame caption="예시: Snapshot 삭제 확인">
+  ![임시 DP Upgrade Snapshot 삭제 확인](/images/google-sites/04-offline-dp-upgrade/29.png)
+</Frame>
+
+마지막으로 Snapshot Manager에서 임시 Snapshot이 더 이상 표시되지 않는지 확인합니다.
+
+<Frame caption="예시: Snapshot 정리 완료">
+  ![임시 Snapshot 정리 후 VMware Snapshot Manager](/images/google-sites/04-offline-dp-upgrade/30.png)
+</Frame>
+
+## 최종 완료 체크리스트
+
+- [ ] 모든 대상 Node에서 Ubuntu 24.04 확인
+- [ ] 모든 필수 Role에서 DP 6.6.0 확인
+- [ ] DL Cluster Ready
+- [ ] DA Cluster Ready
+- [ ] 필수 Pod 및 Host Service Ready
+- [ ] NTP 동기화
+- [ ] DNS/Network Check PASS
+- [ ] 필요한 경우 License/OTP 정상
+- [ ] Web UI 및 일반 운영 기능 검증 완료
+- [ ] Upgrade Log/Evidence 보존
+- [ ] 정책에 따라 Snapshot 정리 승인 또는 보류
+
+모든 필수 항목이 완료되면 Maintenance Window를 종료할 수 있습니다.
+
+더 상세한 검증 항목은 **참고 자료** 탭의 [상세 업그레이드 후 검증](/ko/operations/validation)을 확인하십시오.

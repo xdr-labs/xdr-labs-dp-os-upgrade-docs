@@ -104,7 +104,8 @@
                 "group": "작업 절차",
                 "pages": [
                   "ko/runbook/ubuntu-24-04-server-installation",
-                  "ko/runbook/offline-dp-upgrade"
+                  "ko/runbook/offline-dp-upgrade",
+                  "ko/runbook/post-upgrade-validation"
                 ]
               },
               {
