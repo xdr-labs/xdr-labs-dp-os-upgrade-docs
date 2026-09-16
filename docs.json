@@ -1,8 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "DP Ubuntu Upgrade Mirror Manager",
-  "description": "Operator documentation for preparing a local Mirror Server, upgrading Stellar Cyber Data Processor systems to Ubuntu 24.04, and completing DP 6.6.0 Phase 2 bringup.",
+  "name": "DP Offline Ubuntu Upgrade Guide",
+  "description": "Step-by-step operator runbook for preparing a Mirror Server, upgrading Stellar Cyber Data Processors to Ubuntu 24.04, completing DP 6.6.0 bringup, and validating the system.",
   "colors": {
     "primary": "#16A34A"
   },
@@ -13,41 +13,42 @@
         "tab": "Guide",
         "groups": [
           {
-            "group": "Start Here",
+            "group": "DP Offline Upgrade Runbook",
             "pages": [
               "index",
-              "getting-started/quickstart",
-              "getting-started/upgrade-path",
-              "getting-started/preparation-modes",
-              "getting-started/requirements",
-              "getting-started/prerequisites"
+              "runbook/work-plan",
+              "runbook/ubuntu-24-04-server-installation",
+              "runbook/mirror-server-setup",
+              "runbook/offline-dp-upgrade",
+              "runbook/post-upgrade-validation"
             ]
           },
           {
-            "group": "Mirror Manager",
+            "group": "Help & Recovery",
             "pages": [
+              "operations/troubleshooting",
+              "operations/retry-recovery",
+              "operations/move-dark-site",
+              "video-guides"
+            ]
+          },
+          {
+            "group": "Advanced Details",
+            "pages": [
+              "getting-started/requirements",
+              "getting-started/quickstart",
+              "getting-started/upgrade-path",
+              "getting-started/preparation-modes",
+              "getting-started/prerequisites",
               "mirror-manager/install",
               "mirror-manager/configuration",
               "mirror-manager/download-prepare",
               "mirror-manager/http-readiness",
-              "mirror-manager/client-commands"
-            ]
-          },
-          {
-            "group": "DP Upgrade",
-            "pages": [
+              "mirror-manager/client-commands",
               "dp-upgrade/full-os-upgrade",
               "dp-upgrade/phase2-only",
-              "dp-upgrade/clusters"
-            ]
-          },
-          {
-            "group": "Operations",
-            "pages": [
-              "operations/move-dark-site",
-              "operations/retry-recovery",
-              "operations/validation",
-              "operations/troubleshooting"
+              "dp-upgrade/clusters",
+              "operations/validation"
             ]
           },
           {
