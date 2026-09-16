@@ -1,0 +1,101 @@
+---
+title: "문제 해결"
+description: "Mirror Manager 준비, HTTP Readiness, Phase 1 Resume, DP 6.6.0 Bringup 문제를 단계별로 진단합니다."
+---
+
+# 문제 해결
+
+설정을 변경하기 전에 먼저 어느 단계에서 문제가 발생했는지 확인하십시오.
+
+```text
+Mirror Server Configuration
+  → Download / Prepare
+  → HTTP Distribution
+  → Readiness
+  → DP Phase 1 OS Upgrade
+  → DP Phase 2 Bringup
+  → Post-upgrade Validation
+```
+
+## SSH가 끊긴 후 Mirror Manager가 열리지 않음
+
+다시 접속한 뒤 다음을 실행합니다.
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+GUI를 다시 열기 위한 목적으로 `install.sh`를 재실행하지 마십시오.
+
+## Download and Prepare가 중단됨
+
+다른 Menu 2 작업이 이미 실행 중이지 않은지 확인한 후 Menu 2를 다시 실행합니다.
+
+현재 Workflow는 완료된 파일과 Partial Data를 재사용할 수 있습니다. 강제로 처음부터 다시 받으려고 ACPS `.part` 파일을 삭제하지 마십시오.
+
+유용한 확인 명령:
+
+```bash
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+## Readiness가 NOT READY 또는 FAIL
+
+다음 순서로 다시 확인합니다.
+
+1. 저장된 Configuration
+2. Mirror Server IP
+3. Prepared Artifact 상태
+4. nginx Configuration 및 Service 상태
+5. 선택한 Mode에 필요한 파일의 실제 HTTP 접근
+6. Menu 4 재실행
+
+Readiness가 `PASS`가 될 때까지 DP 업그레이드를 시작하지 마십시오.
+
+## Mirror Server IP가 변경됨
+
+Configuration에서 IP를 변경하고 필요한 순서를 다시 실행합니다.
+
+```text
+2 → 3 → 4 → 7
+```
+
+생성된 Client Artifact에는 저장된 Mirror Server IP가 포함되므로 이전 Menu 7 명령을 재사용하지 마십시오.
+
+## Phase 1 OS Upgrade가 Blocked 상태
+
+현재 Phase 1 Engine은 Retry 가능한 조건과 Integrity/Evidence 문제를 구분합니다.
+
+일시적인 원인 예시:
+
+- DNS Failure
+- HTTP/Network Failure
+- NTP Failure
+- Active apt/dpkg Lock
+
+원인을 수정한 후 현재 Status/Recovery Guidance를 따르십시오. 상태를 없애기 위해 `/opt/aelladata/os-upgrade`를 삭제하지 마십시오.
+
+## Ubuntu 22.04 상태가 비정상으로 보임
+
+Jammy는 Full Upgrade의 중간 OS 상태입니다. 일부 DP Build에서는 이 Hop 동안 Product Runtime이 동작하지 않거나 호환되지 않을 수 있습니다.
+
+중간 상태를 정상처럼 보이게 만들기 위해 kubelet, Docker 또는 DP Runtime을 임의로 복구하지 마십시오. 검증된 OS Workflow를 Ubuntu 24.04까지 계속한 후 Phase 2를 완료하십시오.
+
+## Worker Bringup 실패
+
+다음을 확인합니다.
+
+- Mirror Manager에 올바른 DL/DA Worker List가 저장되어 있는지
+- Master → Worker SSH 연결 가능 여부
+- 설정된 공통 `aella` Worker Password
+- Node IP Addressing 및 MTU
+- NTP 및 DNS
+- Kubernetes Node 상태
+- 최종 Master Orchestration 전에 모든 Node의 Common Staging이 완료되었는지
+
+관련 Configuration을 변경했다면 Menu 7 출력을 다시 생성하십시오.
+
+## Rollback
+
+이 프로젝트는 OS 또는 DP Runtime Downgrade 명령을 제공하지 않습니다. 현재 Release Tooling으로 파괴적 장애를 안전하게 복구할 수 없다면 승인된 Hypervisor Snapshot을 Restore하십시오.
