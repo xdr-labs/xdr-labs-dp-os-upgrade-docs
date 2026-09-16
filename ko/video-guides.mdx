@@ -1,0 +1,71 @@
+---
+title: "영상 가이드"
+description: "DP Ubuntu 오프라인 업그레이드 Workflow를 화면으로 확인할 수 있는 보조 영상입니다."
+---
+
+# 영상 가이드
+
+번호가 붙은 Runbook을 먼저 읽은 뒤 이 영상들을 **화면 흐름을 확인하는 보조 자료**로 사용하십시오. Release별 실제 명령은 현재 작성된 Runbook과 설치된 Mirror Manager가 기준입니다.
+
+<Warning>
+영상 내용이 현재 Mirror Manager와 다르면 현재 Mirror Manager와 최신 Menu 7 출력을 따르십시오. 오래된 영상에는 과거 DP 6.5.0 화면이나 명령이 포함될 수 있습니다.
+</Warning>
+
+## 영상 1
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/O3MyNXVAuzM"
+  title="DP 오프라인 Ubuntu 업그레이드 영상 가이드 1"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+[YouTube에서 영상 1 열기](https://www.youtube.com/watch?v=O3MyNXVAuzM)
+
+## 영상 2
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/o201yZxfVrU"
+  title="DP 오프라인 Ubuntu 업그레이드 영상 가이드 2"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+[YouTube에서 영상 2 열기](https://www.youtube.com/watch?v=o201yZxfVrU)
+
+## 영상 3
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/YdIm_yX7gdY"
+  title="DP 오프라인 Ubuntu 업그레이드 영상 가이드 3"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+[YouTube에서 영상 3 열기](https://www.youtube.com/watch?v=YdIm_yX7gdY)
+
+## 권장 문서 확인 순서
+
+<Steps>
+  <Step title="작업 계획 수립">
+    **[1. 업그레이드 작업 계획](/ko/runbook/work-plan)**을 읽고 올바른 업그레이드 경로와 복구 계획을 확인합니다.
+  </Step>
+  <Step title="Mirror Server 구축">
+    새 서버가 필요한 경우 **[2. Ubuntu 24.04 서버 설치](/ko/runbook/ubuntu-24-04-server-installation)**를 따릅니다.
+  </Step>
+  <Step title="Upgrade Content 준비">
+    **[3. Mirror Server 설치 및 준비](/ko/runbook/mirror-server-setup)**를 따라 `Upgrade Readiness = PASS` 상태까지 완료합니다.
+  </Step>
+  <Step title="Production Upgrade 수행">
+    최신 Menu 7 명령을 사용하여 **[4. DP 오프라인 Ubuntu 업그레이드](/ko/runbook/offline-dp-upgrade)**를 수행합니다.
+  </Step>
+  <Step title="검증 및 작업 종료">
+    Maintenance Window 종료 전에 **[5. 업그레이드 후 검증](/ko/runbook/post-upgrade-validation)**을 완료합니다.
+  </Step>
+</Steps>
