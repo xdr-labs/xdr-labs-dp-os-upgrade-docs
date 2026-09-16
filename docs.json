@@ -102,7 +102,9 @@
               },
               {
                 "group": "작업 절차",
-                "pages": []
+                "pages": [
+                  "ko/runbook/ubuntu-24-04-server-installation"
+                ]
               },
               {
                 "group": "문제 해결 및 복구",
