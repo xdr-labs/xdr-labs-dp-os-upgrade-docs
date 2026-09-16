@@ -1,0 +1,45 @@
+---
+title: "Network Reference"
+description: "현재 Workflow의 Mirror Server 및 DP Connectivity 요구사항입니다."
+---
+
+# Network Reference
+
+## Data Path
+
+```text
+Cloudflare R2 ─────┐
+                   ├── HTTPS ──> Mirror Server ── HTTP/TCP 80 ──> DP Host
+ACPS ──────────────┘
+```
+
+## Mirror Server Outbound
+
+Mirror Server는 다음 Outbound Access가 필요합니다.
+
+| Destination | 목적 |
+| --- | --- |
+| GitHub Endpoint | 초기 Clone 및 의도적인 Source Update |
+| `https://xdrsolutions.uk` | Full Mode의 Cloudflare R2 OS Core Package |
+| ACPS Endpoint | DP 6.6.0 Phase 2 Artifact |
+| Ubuntu Package Repository | Mirror Server Bootstrap 및 Package 설치 |
+
+## DP Host
+
+현재 Offline/Mirror Workflow에서 DP Host가 접근해야 하는 경로는 다음뿐입니다.
+
+```text
+TCP 80 -> <MIRROR_SERVER_IP>
+```
+
+DP Host는 Cloudflare R2 또는 ACPS에 직접 접근할 필요가 없습니다.
+
+Cluster Member는 최종 Orchestration을 위해 기존 내부 DP-to-DP Connectivity와 Master-to-Worker SSH Path도 필요합니다.
+
+## IP 변경
+
+Mirror Server IP는 생성되는 Client Artifact에 포함됩니다. IP 변경 후에는 Menu 7을 사용하기 전에 Configuration을 Update하고 Client File을 다시 Generate/Publish/Verify하십시오.
+
+## Historical Note
+
+과거 Runbook에는 Canonical 직접 접근, TCP 3142의 `apt-cacher-ng`, Full `apt-mirror` Server가 설명되어 있습니다. 이는 현재 Mirror Manager Data Path가 아닙니다.
