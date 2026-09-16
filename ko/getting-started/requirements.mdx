@@ -1,0 +1,71 @@
+---
+title: "요구사항"
+description: "현재 검증된 Mirror Server 기준 사양, 네트워크 경로, Credential 및 DP 안전 요구사항입니다."
+---
+
+# 요구사항
+
+## Mirror Server 기준 사양
+
+깨끗한 **Ubuntu 24.04 LTS amd64** 시스템을 사용합니다.
+
+| 항목 | 현재 기준 |
+| --- | --- |
+| CPU | 최소 2 vCPU, 권장 4 vCPU |
+| Memory | 최소 4 GB, 권장 8 GB |
+| Disk | 현재 Artifact 기준 **총 100 GB** |
+| IP Address | 모든 DP Host에서 접근 가능한 고정 IPv4 |
+| DP → Mirror Server | TCP **80** |
+| Mirror Server Outbound | GitHub, Ubuntu Bootstrap Repository, Cloudflare R2, ACPS로 HTTPS |
+
+현재 Artifact의 대략적인 크기는 다음과 같습니다.
+
+- OS Core / Selective Mirror: **3.4 GiB**
+- DP 6.6.0 Phase 2 Bundle: **28.2 GiB**
+- 신규 Download and Prepare Peak: Build Overhead와 Reserve를 포함해 약 **70 GiB**
+
+Application은 Free-space Preflight를 수행합니다. 100 GB는 현재 Artifact Set에 대해 검증된 기준이며 향후 Release까지 영구적으로 보장되는 값은 아닙니다.
+
+## Credential
+
+Mirror Manager에는 다음 정보가 필요합니다.
+
+- ACPS Username 및 Password
+- Worker Node가 설정된 경우 공통 `aella` Worker SSH Password
+
+ACPS Credential은 다음 파일에 Root-owned, Mode `600`으로 저장됩니다.
+
+```text
+/etc/ubuntu-mirror/dp-upgrade-mirror.conf
+```
+
+Application Log에서는 Credential을 Redact합니다.
+
+## Network 요구사항
+
+Mirror Server는 다음 Outbound Access가 필요합니다.
+
+- 초기 Clone 및 Source Update를 위한 GitHub
+- Full Mode의 R2 OS Core Package를 위한 `https://xdrsolutions.uk`
+- Phase 2 Artifact용 ACPS Endpoint
+- Mirror Server 자체 Bootstrap에 필요한 Ubuntu Repository
+
+DP Host는 다음 경로에만 접근하면 됩니다.
+
+```text
+http://<MIRROR_SERVER_IP>:80
+```
+
+DP Host는 R2 또는 ACPS에 직접 접근할 필요가 없습니다.
+
+## DP 안전 사전 조건
+
+파괴적 DP 명령을 실행하기 전에 다음을 완료하십시오.
+
+- 모든 DP VM의 Full Hypervisor Snapshot 생성
+- Mirror Server Readiness 결과가 `PASS`인지 확인
+- 현재 Mirror Server IP 기준 최신 Menu 7 명령 사용
+- 필요한 LTS Hop과 Phase 2를 완료할 수 있도록 충분한 Maintenance Window 확보
+- `/opt/aelladata`를 보존하고 중간 Ubuntu Release를 Rollback Point로 취급하지 않음
+
+파괴적 장애 발생 시 지원되는 복구 방법은 Hypervisor Snapshot입니다.
