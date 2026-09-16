@@ -1,0 +1,50 @@
+---
+title: "Configuration"
+description: "Preparation Mode, Server IP, ACPS Access 및 Cluster Worker 설정을 구성합니다."
+---
+
+# Configuration
+
+Upgrade File을 Download하기 전에 **Menu 1 — Configuration**을 엽니다.
+
+## 필수 설정값
+
+다음을 설정하고 저장합니다.
+
+1. **Preparation Mode**
+2. **Mirror Server IP**
+3. **ACPS Username**
+4. **ACPS Password**
+5. **DL Worker IP Address**
+6. **DA Worker IP Address**
+7. **Worker SSH Password (aella)**
+8. **Test ACPS Connection**
+9. **Save Configuration**
+
+Worker 관련 항목은 Cluster 구성에서만 필요합니다.
+
+## Mirror Server IP
+
+GUI가 IP 주소를 제안할 수 있지만 Auto-detection은 참고값입니다. 모든 DP Host에서 실제로 접근 가능한 Active IPv4를 확인하십시오.
+
+저장된 IP는 생성되는 Client Artifact에 포함됩니다. Mirror Server IP가 변경되면 Menu 7 명령을 사용하기 전에 Client File을 다시 생성하십시오.
+
+## Cluster Configuration
+
+DL/DA Cluster에서는 다음 규칙을 따릅니다.
+
+- DL Worker List에는 DL Worker IP만 입력하고 DL Master는 포함하지 않음
+- DA Worker List에는 DA Worker IP만 입력하고 DA Master는 포함하지 않음
+- 각 Master가 자신의 Worker에 접속할 때 사용하는 공통 `aella` Worker SSH Password 설정
+
+AIO, Single-node 또는 Master-only 구성에서는 두 Worker List를 비워 둡니다. 이 경우 Worker Password는 필요하지 않습니다.
+
+## 고정 Workflow 값
+
+현재 Application은 다음 값을 고정 Workflow 값으로 사용합니다.
+
+- Phase 2 Target: **6.6.0**
+- ACPS Endpoint: Application-controlled
+- Full Mode OS Core Source: Cloudflare R2
+
+시작 DP Version은 DP Host에서 자동으로 Detect하며 Mirror Manager Configuration에 직접 입력하지 않습니다.
