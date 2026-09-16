@@ -1,0 +1,51 @@
+---
+title: "DL/DA Cluster"
+description: "Worker List를 한 번 설정하고 모든 Node를 Staging한 뒤 DL/DA Master에서 최종 Bringup을 실행합니다."
+---
+
+# DL/DA Cluster
+
+Mirror Manager는 Configuration에 Cluster Worker List를 저장하고 최종 DP 명령을 생성할 때 해당 정보를 사용합니다.
+
+## Worker 설정
+
+Menu 1에서 다음을 설정합니다.
+
+- **DL Worker IP addresses**: DL Worker만 입력하고 DL Master는 포함하지 않음
+- **DA Worker IP addresses**: DA Worker만 입력하고 DA Master는 포함하지 않음
+- **Worker SSH Password (aella)**: 각 Master가 자신의 Worker에 연결할 때 사용하는 공통 Password
+
+## 먼저 Common Staging 수행
+
+Cluster 구성에서는 Menu 7의 Common Step을 모든 대상 Node에서 실행합니다.
+
+```text
+DL Master
+DL Worker(s)
+DA Master
+DA Worker(s)
+```
+
+최종 Bringup을 시작하기 전에 **모든 Node**에서 Common Staging/Prerequisite Phase를 완료하십시오.
+
+## 최종 Bringup
+
+Role별 최종 명령은 Master에서만 실행합니다.
+
+```text
+DL Master  ──> 설정된 DL Worker Orchestration
+DA Master  ──> 설정된 DA Worker Orchestration
+```
+
+Master Orchestration 명령을 Worker에서 직접 실행하지 마십시오.
+
+생성된 명령은 Mirror Manager에 저장된 Worker Configuration을 사용합니다. `--worker-ips` 또는 Password Flag를 수동으로 다시 구성하지 말고 Menu 7 출력을 사용하십시오.
+
+## 권장 검증 순서
+
+1. DL Master/Worker Bringup을 완료하고 DL Readiness 확인
+2. DA Master/Worker Bringup 실행
+3. 모든 예상 Kubernetes Node 및 Service가 Ready인지 확인
+4. Application, NTP, DNS, Cluster Connectivity 검증
+
+현재 Release의 Menu 7 출력이 이 Overview보다 더 구체적인 경우 Menu 7 지침이 우선합니다.
