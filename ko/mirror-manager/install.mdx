@@ -1,0 +1,56 @@
+---
+title: "Mirror Manager 설치"
+description: "Ubuntu 24.04에 현재 Runtime을 설치하고 Installer가 변경하는 내용을 이해합니다."
+---
+
+# Mirror Manager 설치
+
+## 설치
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+
+git clone https://github.com/xdr-labs/ubuntu-mirror-automation.git
+cd ubuntu-mirror-automation
+sudo ./install.sh
+```
+
+Non-interactive 또는 CI Bootstrap에서는 다음을 사용할 수 있습니다.
+
+```bash
+sudo ./install.sh --non-interactive
+```
+
+## Installer가 수행하는 작업
+
+현재 Installer는 다음을 수행합니다.
+
+1. Ubuntu 24.04 LTS amd64, Root, systemd, apt 환경 검증
+2. nginx, whiptail/dialog, curl, Python 등 필요한 Package 설치
+3. Disk를 Format하지 않고 Mirror Directory 생성
+4. Runtime을 `/usr/local/lib/ubuntu-mirror`에 설치
+5. `ubuntu-offline-mirror`를 `/usr/local/bin`에 설치
+6. nginx Base Configuration 설치
+7. Interactive TTY가 있으면 GUI 실행
+
+Installer는 대용량 R2 또는 ACPS Download를 자동으로 시작하지 않습니다. 해당 Download는 **Menu 2 — Download and Prepare Upgrade Files**에서만 시작됩니다.
+
+## 나중에 GUI 다시 열기
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+SSH Disconnect 후 이 명령으로 GUI를 다시 여십시오. 기존 설치를 다시 열기 위한 목적으로 `install.sh`를 재실행하지 마십시오.
+
+## Application Update
+
+Source Repository를 의도적으로 Update할 때는 다음을 실행합니다.
+
+```bash
+git pull
+sudo ./install.sh
+```
+
+Source Update 후 재설치는 Client Artifact를 다시 Build/Publish하여 이전 Readiness 상태를 Stale로 만들 수 있습니다. Application이 지시하는 Mirror Manager 단계를 다시 수행하십시오.
