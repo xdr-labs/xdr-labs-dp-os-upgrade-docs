@@ -1,0 +1,47 @@
+---
+title: "준비된 Mirror Server를 폐쇄망으로 이동"
+description: "외부 연결 환경에서 준비한 Mirror Server를 최종 폐쇄망으로 이동한 뒤 Artifact를 재사용하는 절차입니다."
+---
+
+# 준비된 Mirror Server를 폐쇄망으로 이동
+
+Mirror Server는 Internet 연결이 가능한 환경에서 미리 준비하고 검증한 뒤 최종 폐쇄망으로 이동할 수 있습니다.
+
+이동 후 다음 순서로 진행합니다.
+
+1. Mirror Server를 부팅하고 최종 폐쇄망 IP 주소를 설정합니다.
+2. GUI를 엽니다.
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+3. **Menu 1 — Configuration**을 엽니다.
+4. **Mirror Server IP**를 최종 IP로 변경하고 저장합니다.
+5. 다음 순서를 실행합니다.
+
+```text
+2  Download and Prepare Upgrade Files
+3  Enable HTTP Distribution
+4  Verify Upgrade Readiness
+7  Show DP Client Upgrade Commands
+```
+
+6. Menu 4가 `PASS`인지 확인합니다.
+7. 새로 생성된 Menu 7 명령만 사용합니다.
+
+## 왜 Menu 2를 다시 실행하나요?
+
+현재 구현은 이미 준비된 Local Artifact가 여전히 유효하면 재사용하지만, Mirror Server IP가 포함되는 Client-side 파일은 다시 생성합니다.
+
+IP 변경 전에 생성된 명령을 재사용하지 마십시오.
+
+## 폐쇄망 Network 요구사항
+
+준비된 Server가 제한된 Network로 이동한 후 DP Host가 접근해야 하는 경로는 다음뿐입니다.
+
+```text
+http://<FINAL_MIRROR_SERVER_IP>:80
+```
+
+DP Host는 Cloudflare R2 또는 ACPS에 직접 접근할 필요가 없습니다.
