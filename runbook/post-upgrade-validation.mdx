@@ -115,7 +115,33 @@ Keep the pre-upgrade/recovery snapshot until:
 4. NTP/DNS and application checks pass
 5. the maintenance/change procedure is approved for closure
 
-Only then remove the temporary upgrade snapshot according to the customer's hypervisor and change-control policy.
+<Warning>
+Do **not** delete the recovery snapshot simply because the upgrade script returned success. Snapshot cleanup is the final action after technical validation and change-control approval.
+</Warning>
+
+When cleanup is approved, open the hypervisor snapshot manager for the DP VM.
+
+<Frame caption="Example: open the VMware snapshot manager">
+  <img src="/images/google-sites/04-offline-dp-upgrade/27.png" alt="Open VMware Manage Snapshots for the upgraded DP" />
+</Frame>
+
+Select the temporary pre-upgrade snapshot and choose **Delete snapshot**.
+
+<Frame caption="Example: select the temporary pre-upgrade snapshot for deletion">
+  <img src="/images/google-sites/04-offline-dp-upgrade/28.png" alt="Select the temporary DP upgrade snapshot for deletion" />
+</Frame>
+
+Confirm the deletion only after the approved validation gate has passed.
+
+<Frame caption="Example: confirm snapshot deletion">
+  <img src="/images/google-sites/04-offline-dp-upgrade/29.png" alt="Confirm deletion of the temporary DP upgrade snapshot" />
+</Frame>
+
+Finally, confirm the temporary snapshot no longer appears in the snapshot manager.
+
+<Frame caption="Example: snapshot cleanup complete">
+  <img src="/images/google-sites/04-offline-dp-upgrade/30.png" alt="VMware snapshot manager after temporary snapshot cleanup" />
+</Frame>
 
 ## Final completion checklist
 
