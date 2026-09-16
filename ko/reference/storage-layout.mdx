@@ -1,0 +1,39 @@
+---
+title: "Storage 및 Filesystem"
+description: "현재 검증된 Disk 기준, Artifact 크기 및 Filesystem 제약사항입니다."
+---
+
+# Storage 및 Filesystem
+
+## 현재 기준
+
+현재 검증된 Deployment는 Ubuntu OS와 Mirror Data를 포함해 **하나의 100 GB Disk**를 사용합니다.
+
+대략적인 현재 Data Size:
+
+| Data | 대략적인 크기 |
+| --- | ---: |
+| Ubuntu OS Core / Selective Mirror | 3.4 GiB |
+| DP 6.6.0 Phase 2 Bundle | 28.2 GiB |
+| Fresh Download and Prepare Peak | 약 70 GiB |
+
+Application은 보수적인 Free-space Preflight를 수행하고 Safety Reserve를 유지합니다. 향후 Artifact Set은 커질 수 있으므로 100 GB는 현재 기준이며 영구적인 Sizing 보장은 아닙니다.
+
+## 선택적 별도 Data Disk
+
+별도 Data Disk는 선택사항입니다. 사용할 경우 Preparation에서 Hard Link와 Atomic Rename을 사용하므로 다음 Path를 **같은 Filesystem**에 유지하십시오.
+
+```text
+/var/spool/apt-mirror
+/var/spool/apt-mirror/.install-cache
+/var/spool/apt-mirror/selective
+/var/spool/apt-mirror/dp-phase2
+```
+
+`/var/spool/apt-mirror`라는 Path Name은 Compatibility를 위해 유지됩니다. 현재 Workflow가 전통적인 Full `apt-mirror` Archive를 생성한다는 의미는 아닙니다.
+
+## Resume-aware Disk Accounting
+
+중단된 ACPS Download는 `.part` 파일을 남길 수 있습니다. Preflight는 전체 Download를 두 번 계산하지 않고 재사용 가능한 완료/Partial Data를 고려합니다.
+
+중단된 Download를 Retry하기 위해 `.part` 파일을 삭제하지 마십시오.
