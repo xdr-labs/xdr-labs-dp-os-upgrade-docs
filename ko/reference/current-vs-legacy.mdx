@@ -1,0 +1,43 @@
+---
+title: "현재 절차와 과거 절차"
+description: "과거 6.5.0, apt-cacher-ng 및 Full Mirror 절차와 현재 Mirror Manager Workflow의 차이를 설명합니다."
+---
+
+# 현재 절차와 과거 절차
+
+DP OS Upgrade Workflow가 발전하는 동안 여러 내부 PDF와 QA Runbook이 만들어졌습니다. 이 자료는 Historical Test Evidence로는 유용하지만 모두 현재 작업자 Workflow를 설명하는 것은 아닙니다.
+
+## 현재 기준 Source of Truth
+
+이 문서 사이트에서는 다음 Repository의 현재 `main` Branch가 주요 Implementation Source입니다.
+
+```text
+xdr-labs/ubuntu-mirror-automation
+```
+
+현재 Workflow는 다음을 사용합니다.
+
+- 고정 Phase 2 Target: **DP 6.6.0**
+- 하나의 Mirror Manager GUI
+- Full Mode에서 Cloudflare R2의 Selective OS Core Package
+- ACPS의 DP Phase 2 Artifact
+- TCP 80의 nginx HTTP Distribution
+- Menu 7에서 생성되는 DP Client 명령
+
+## 과거 절차
+
+이전 문서에는 다음 내용이 있을 수 있습니다.
+
+- Phase 2 Target으로 DP 6.5.0 사용
+- `bringup_py3_dp_after_os_upgrade.sh --version 6.5.0`
+- TCP 3142의 `apt-cacher-ng` Cache Server
+- 수백 GB 또는 수 TB가 필요한 전통적인 Full Ubuntu `apt-mirror`
+- 각 DP에서 Canonical Repository로 직접 접근
+
+이 절차들은 이전 Development/QA 단계에 해당하며 Engineering이 Historical Path를 명시적으로 요구하지 않는 한 현재 Mirror Manager Workflow와 섞어 사용하지 마십시오.
+
+## 왜 중요한가
+
+서로 다른 세대의 명령을 혼합하면 잘못된 Artifact Version, 오래된 Server Address, 호환되지 않는 Package Source 또는 지원되지 않는 Recovery Path가 발생할 수 있습니다.
+
+현재 Mirror Manager를 사용하고 Menu 4 `PASS`를 요구하며 동일한 설치 Version이 생성한 Menu 7 명령을 사용하십시오.
