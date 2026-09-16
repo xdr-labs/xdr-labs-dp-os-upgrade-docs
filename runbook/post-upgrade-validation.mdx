@@ -1,0 +1,136 @@
+---
+title: "5. Post-Upgrade Validation"
+description: "Confirm Ubuntu 24.04, DP 6.6.0, cluster readiness, services, NTP, DNS, and recovery-snapshot cleanup criteria."
+---
+
+# 5. Post-Upgrade Validation
+
+Do not close the maintenance window just because the last upgrade command returned successfully. Validate the operating system **and** the DP application state.
+
+## 1 — Verify Ubuntu on every DP node
+
+Run:
+
+```bash
+cat /etc/os-release
+uname -r
+```
+
+Confirm every upgraded target node is running **Ubuntu 24.04** and the expected kernel.
+
+## 2 — Verify DP version and status
+
+Enter the DP CLI and run:
+
+```text
+show version
+show status
+```
+
+The expected application target for the current Mirror Manager workflow is:
+
+```text
+DP 6.6.0
+```
+
+Do not treat a node as complete while `show status` still reports missing required services, unready nodes, or a non-ready role state.
+
+## 3 — Verify DL/DA cluster readiness
+
+For clustered deployments, confirm every expected node is present and Ready:
+
+```bash
+kubectl get nodes -o wide
+```
+
+Validate:
+
+- DL master and all configured DL workers
+- DA master and all configured DA workers
+- release-specific labels and cluster networking where required
+- all expected pods and host services
+
+The DL cluster should already have been validated before DA bringup began; this final check confirms the combined production state.
+
+## 4 — Verify NTP and DNS
+
+Check time synchronization:
+
+```bash
+timedatectl
+systemctl is-active ntpsec systemd-timesyncd 2>/dev/null
+```
+
+When `ntpsec` is used:
+
+```bash
+ntpq -p
+```
+
+Investigate an unsynchronized clock before returning the DP to service.
+
+Also confirm DNS resolution and the customer-required network paths.
+
+## 5 — Verify application readiness
+
+At minimum confirm:
+
+- DP version is 6.6.0
+- all expected nodes are Ready
+- required pods are running
+- required host services are ready
+- DNS is configured
+- NTP is synchronized
+- licensing/OTP state is valid where applicable
+- DL/DA role-specific services are healthy
+- Web UI and normal DP operations are reachable
+
+Allow several minutes after `resume` for the platform to settle before deciding that a service is missing.
+
+## 6 — Preserve evidence
+
+On the Mirror Server, preserve the current status and logs:
+
+```bash
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+On each DP that performed Phase 1, preserve:
+
+```text
+/var/log/aella/auto_os_upgrade.log
+/opt/aelladata/os-upgrade/
+```
+
+Do not delete failure or state evidence when escalating a problem.
+
+## 7 — Recovery snapshot cleanup
+
+Keep the pre-upgrade/recovery snapshot until:
+
+1. Ubuntu 24.04 is confirmed on every required node
+2. DP 6.6.0 is confirmed
+3. DL and DA clusters are healthy
+4. NTP/DNS and application checks pass
+5. the maintenance/change procedure is approved for closure
+
+Only then remove the temporary upgrade snapshot according to the customer's hypervisor and change-control policy.
+
+## Final completion checklist
+
+- [ ] Ubuntu 24.04 on every target node
+- [ ] DP 6.6.0 on every required role
+- [ ] DL cluster Ready
+- [ ] DA cluster Ready
+- [ ] required pods and host services Ready
+- [ ] NTP synchronized
+- [ ] DNS/network checks pass
+- [ ] license/OTP valid where applicable
+- [ ] Web UI and normal operations verified
+- [ ] upgrade logs/evidence preserved
+- [ ] snapshot cleanup approved or deferred per policy
+
+When every required item is complete, the maintenance window can be closed.
+
+For lower-level checks, see **[Detailed Post-Upgrade Validation](/operations/validation)**.
