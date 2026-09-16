@@ -31,18 +31,59 @@ Every Ubuntu LTS hop is required.
 | Supported DP 6.2–6.5 already on Ubuntu 24.04 | **Phase 2 Only** | DP 6.6.0 |
 | Healthy DP 6.6.0 already on Ubuntu 24.04 | Normally no upgrade | No change |
 
+## Plan the maintenance window
+
+For the illustrated **3-node DL + 3-node DA** example, use the following as planning estimates rather than guaranteed durations:
+
+| Stage | Example duration | When it happens |
+| --- | ---: | --- |
+| Prepare Mirror Server | **2–3 hours** | Before the production maintenance window |
+| DP pre-checks and service pause | **~30 minutes** | Start of maintenance |
+| Ubuntu OS upgrade block on all nodes | **~1.5–2 hours** | Maintenance window |
+| Powered-off snapshot/checkpoint gate | **~30 minutes** | When required by the current procedure |
+| Phase 2 staging on all nodes | **~2 hours** | Maintenance window; allow network contingency |
+| DL cluster bringup | **~2 hours** | After staging |
+| DA cluster bringup | **~2 hours** | After DL is healthy |
+| Final validation and resume | **15–30 minutes** | Before closing maintenance |
+
+The example diagram estimates a production maintenance window of roughly **8–9 hours**, with Mirror Server preparation completed beforehand. Actual time depends on node count, storage performance, WAN/LAN throughput, reboot time, package state, and cluster recovery time.
+
+<Info>
+Do not compress the maintenance plan by skipping an Ubuntu LTS hop or by starting DA bringup before DL has passed its readiness gate.
+</Info>
+
 ## Full maintenance sequence
 
-1. **Prepare the Mirror Server before downtime.** Complete configuration, download/prepare, HTTP distribution, readiness validation, and generate fresh DP client commands.
-2. **Pre-check the DPs and create the required hypervisor snapshot(s).** Pause DP services only when the current generated procedure tells you to.
-3. **Run Phase 1 on every required DP node.** Follow `16.04 → 18.04 → 20.04 → 22.04 → 24.04` in order.
-4. **Reach and validate Ubuntu 24.04.** Ubuntu success alone does not mean the DP upgrade is complete.
-5. **Stage the DP 6.6.0 Phase 2 artifacts on every required node.**
-6. **Bring up the DL cluster first.** Run final orchestration from the DL master and wait for successful completion.
-7. **Bring up the DA cluster next.** Run final orchestration from the DA master only after DL is healthy.
-8. **Resume and validate the complete system.** Check DP version, node readiness, pods, host services, NTP, DNS, licensing, and normal operations.
+<Steps>
+  <Step title="Prepare the Mirror Server before downtime">
+    Complete configuration, download/prepare, HTTP distribution, readiness validation, and generate fresh DP client commands. The required gate is **Upgrade Readiness = PASS**.
+  </Step>
+  <Step title="Pre-check the DPs and protect recovery">
+    Confirm connectivity and current versions, create the required pre-upgrade hypervisor snapshot(s), and pause DP services only when the current generated procedure tells you to.
+  </Step>
+  <Step title="Upgrade Ubuntu on every required node">
+    Follow `16.04 → 18.04 → 20.04 → 22.04 → 24.04` in order. Each hop is a separate controlled transition.
+  </Step>
+  <Step title="Satisfy any powered-off snapshot gate">
+    If the current upgrade client instructs you to shut down and create a powered-off snapshot/checkpoint before continuing, complete that gate on the required nodes before the next stage.
+  </Step>
+  <Step title="Stage DP 6.6.0 Phase 2 on every required node">
+    Complete staging/preflight on the DL master, DL workers, DA master, and DA workers before final cluster orchestration.
+  </Step>
+  <Step title="Bring up the DL cluster first">
+    Run final orchestration from the DL master and wait until the DL cluster is healthy.
+  </Step>
+  <Step title="Bring up the DA cluster next">
+    Run final orchestration from the DA master only after the DL gate has passed.
+  </Step>
+  <Step title="Resume and validate the complete system">
+    Confirm DP version, node readiness, pods, host services, NTP, DNS, licensing, Web UI, and normal operations before closing the change.
+  </Step>
+</Steps>
 
-<img src="/images/google-sites/01-work-plan/1.png" alt="DP Ubuntu 24.04 offline upgrade work plan" />
+<Frame caption="Example work plan for a 3-node DL cluster and 3-node DA cluster">
+  <img src="/images/google-sites/01-work-plan/1.png" alt="DP Ubuntu 24.04 offline upgrade work plan" />
+</Frame>
 
 ## Go / no-go gates
 
@@ -53,17 +94,27 @@ Do not move to the next major stage unless the current stage is complete:
 | Mirror Server | `Upgrade Readiness = PASS` |
 | Generated commands | Fresh Menu 7 output for the current Mirror Server IP |
 | Phase 1 | Ubuntu 24.04 validated on every required node |
+| Snapshot/checkpoint gate | Any snapshot action explicitly required by the current client is complete |
 | Phase 2 staging | Staging/preflight reports ready for bringup |
-| DL bringup | Bringup completes successfully before DA starts |
+| DL bringup | DL bringup completes successfully before DA starts |
 | Final validation | DP 6.6.0 and all required cluster/services healthy |
 
 ## Safety rules
 
-- Create a **full hypervisor snapshot of every DP VM** before destructive DP work.
+- Create the required **hypervisor snapshot(s) of every DP VM** before destructive DP work.
 - The project does not provide a supported OS or DP-runtime rollback command. Snapshot restore is the recovery path for destructive failures that cannot be recovered in place.
 - Do not reuse old generated commands after the Mirror Server IP or relevant configuration changes.
 - Do not mix historical 6.5.0, `apt-cacher-ng`, or full-mirror runbooks with the current 6.6.0 Mirror Manager workflow.
 - Menu 7 generated by the current installed Mirror Manager is the authoritative source for environment-specific DP commands.
+
+## Before you continue
+
+- [ ] Correct Full / Phase 2 Only path selected
+- [ ] Maintenance window approved
+- [ ] All target nodes and roles identified
+- [ ] Snapshot/recovery method confirmed
+- [ ] Mirror Server build or existing-server plan confirmed
+- [ ] Required network paths and credentials available
 
 ## Next step
 
