@@ -1,0 +1,44 @@
+---
+title: "Preparation Mode"
+description: "현재 DP 상태에 따라 Full OS Upgrade + Phase 2 또는 Phase 2 Only를 선택합니다."
+---
+
+# Preparation Mode
+
+Mirror Manager는 작업자가 선택하는 두 가지 Preparation Mode를 지원합니다.
+
+## Full OS Upgrade + Phase 2
+
+DP가 아직 Ubuntu 16.04이고 최종 DP Bringup 전에 Ubuntu 24.04까지 올라가야 할 때 사용합니다.
+
+```text
+16.04 Xenial
+  → 18.04 Bionic
+  → 20.04 Focal
+  → 22.04 Jammy
+  → 24.04 Noble
+```
+
+Noble 도달 후 Phase 2에서 DP를 **6.6.0**으로 Bringup합니다.
+
+이 Mode에서 Mirror Server는 다음을 모두 준비합니다.
+
+- Cloudflare R2의 Selective Ubuntu OS Core Tree
+- ACPS의 DP 6.6.0 Phase 2 Bundle
+
+## Phase 2 Only
+
+이미 Ubuntu 24.04인 지원 DP를 DP 6.6.0으로 Bringup할 때 사용합니다.
+
+이 Mode는 R2와 OS Hop Mirror 준비를 생략하고 Phase 2 Artifact만 준비합니다.
+
+## 선택표
+
+| 시작 상태 | Mode | 최종 상태 |
+| --- | --- | --- |
+| Ubuntu 16.04의 DP 6.2.x / 6.3.x / 6.4.x | Full OS Upgrade + Phase 2 | Ubuntu 24.04 + DP 6.6.0 |
+| Ubuntu 16.04의 DP 6.5.0 | Full OS Upgrade + Phase 2 | Ubuntu 24.04 + DP 6.6.0 |
+| Ubuntu 24.04의 지원 DP 6.2–6.5 | Phase 2 Only | DP 6.6.0 |
+| Ubuntu 24.04 + 정상 DP 6.6.0 | 일반적으로 업그레이드 불필요 | 변경 없음 |
+
+현재 Application의 Phase 2 Target은 **6.6.0**으로 고정되어 있습니다. 과거 Runbook의 6.5.0 Bringup 지침을 현재 Mirror Manager Workflow에 사용하지 마십시오.
