@@ -1,0 +1,81 @@
+---
+title: "빠른 시작"
+description: "Mirror Manager를 설치하고 Upgrade File을 준비한 뒤 Readiness를 확인하고 DP-side 명령을 생성합니다."
+---
+
+# 빠른 시작
+
+모든 DP Host에서 접근 가능한 고정 IPv4를 가진 깨끗한 **Ubuntu 24.04 LTS amd64** 서버를 사용합니다.
+
+## 1. Mirror Manager 설치
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+
+git clone https://github.com/xdr-labs/ubuntu-mirror-automation.git
+cd ubuntu-mirror-automation
+sudo ./install.sh
+```
+
+Interactive Terminal에서는 Installer가 Mirror Manager GUI를 엽니다. 나중에 다시 열려면 다음을 실행합니다.
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+GUI를 다시 열기 위해 `install.sh`를 재실행하지 마십시오.
+
+## 2. Project Configuration
+
+**Menu 1 — Configuration**에서 다음을 설정합니다.
+
+- Preparation Mode
+- Mirror Server IP
+- ACPS Username
+- ACPS Password
+- 필요한 경우 DL Worker IP
+- 필요한 경우 DA Worker IP
+- Worker가 설정된 경우 Worker SSH Password (`aella`)
+
+그 다음 ACPS Connection Test를 실행하고 Configuration을 저장합니다.
+
+AIO 또는 Single-node 구성에서는 두 Worker IP List를 비워 둡니다.
+
+## 3. Upgrade File 준비 및 Publish
+
+다음 순서로 실행합니다.
+
+```text
+2  Download and Prepare Upgrade Files
+3  Enable HTTP Distribution
+4  Verify Upgrade Readiness
+```
+
+Menu 4가 다음을 표시하기 전에는 진행하지 마십시오.
+
+```text
+PASS
+```
+
+## 4. DP 명령 생성
+
+다음을 엽니다.
+
+```text
+7  Show DP Client Upgrade Commands
+```
+
+Menu 7은 현재 Configuration과 Mirror Server IP에 맞는 DP-side 명령의 기준입니다.
+
+동일한 출력은 Mirror Server의 다음 파일에도 저장됩니다.
+
+```text
+/var/log/ubuntu-mirror-automation/dp-client-upgrade-commands.txt
+```
+
+## 5. DP 업그레이드
+
+Menu 7 출력을 정확히 따릅니다. Cluster 구성에서는 모든 대상 Node에서 Common Staging을 먼저 완료한 후 각 Master에서 Role별 최종 Bringup 명령을 실행합니다.
+
+업그레이드 후 Ubuntu 24.04, DP 6.6.0, Node Readiness, Service, NTP/DNS, Cluster Health를 검증한 뒤 Maintenance Window를 종료하십시오.
