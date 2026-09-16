@@ -1,0 +1,52 @@
+---
+title: "Download and Prepare"
+description: "Resume 가능한 Download와 Checksum 검증으로 Selective OS Core 및 DP 6.6.0 Phase 2 Bundle을 준비합니다."
+---
+
+# Upgrade File Download 및 Prepare
+
+Configuration 저장 후 **Menu 2 — Download and Prepare Upgrade Files**를 실행합니다.
+
+## Full OS Upgrade + Phase 2
+
+Menu 2는 다음을 수행합니다.
+
+- 유효한 기존 OS Core Selective Tree가 있으면 검증 후 재사용
+- 없으면 Cloudflare R2에서 OS Core Package를 Download하고 Selective Mirror 생성
+- ACPS에서 DP 6.6.0 Phase 2 Artifact를 Download하거나 기존 파일 재사용
+- 제공된 Checksum 검증
+- 최종 DP 6.6.0 Bundle 생성
+- 설정된 Mirror Server IP를 기준으로 DP Client Artifact 준비
+
+## Phase 2 Only
+
+Menu 2는 R2와 모든 OS Hop 준비를 생략하고 DP 6.6.0 Phase 2 Artifact만 Download/Reuse하여 준비합니다.
+
+## 장시간 작업
+
+대용량 Download, SHA256 Check, Tar 작업은 수 분 이상 걸릴 수 있습니다. 현재 Workflow는 긴 작업 중 Progress 또는 Heartbeat Message를 출력합니다. 해당 Message가 계속 나오고 있다면 Process가 멈췄다고 판단하지 마십시오.
+
+## Download 중단 시
+
+Preparation Flow는 유효한 Local Data를 재사용하도록 설계되어 있습니다.
+
+- R2 Partial Data Resume 가능
+- ACPS Partial Data Resume 가능
+- 완료된 ACPS File 재사용
+- 유효한 기존 OS Core Tree 재사용
+- 유효한 기존 최종 Phase 2 Bundle 재사용
+
+Retry를 위해 ACPS `.part` 파일을 삭제하지 마십시오. Resume Data입니다.
+
+중단 후 Mirror Manager를 다시 열고 Menu 2를 다시 실행합니다. 다른 Menu 2 Process가 여전히 실행 중이면 두 번째 Process를 시작하지 말고 기존 작업이 끝날 때까지 기다립니다.
+
+## 성공 Gate
+
+Menu 2 완료 후 다음 순서로 진행합니다.
+
+```text
+3  Enable HTTP Distribution
+4  Verify Upgrade Readiness
+```
+
+Download 완료만으로 DP Upgrade를 시작할 수 있는 것은 아닙니다.
