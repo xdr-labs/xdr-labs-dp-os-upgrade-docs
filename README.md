@@ -1,14 +1,24 @@
-# DP OS Upgrade Documentation
+# DP Offline Ubuntu Upgrade Documentation
 
-Mintlify documentation for the Stellar Cyber Data Processor Ubuntu OS upgrade and post-OS DP bringup workflow.
+Mintlify documentation for the current Stellar Cyber Data Processor offline Ubuntu OS upgrade and post-OS DP bringup workflow.
 
-The documentation site is driven from `docs.json` at the repository root and covers:
+The site is driven from `docs.json` and is organized as an operator runbook:
 
-- Ubuntu 16.04 → 18.04 → 20.04 → 22.04 → 24.04 OS upgrade paths
-- Direct Internet, cache-server, and fully offline/local-mirror scenarios
-- DP 6.5.0 Py3 bringup on Ubuntu 24.04
-- Online and dark-site bringup
-- DL/DA master and worker orchestration
-- Validation, logs, recovery, and troubleshooting
+1. Upgrade Work Plan
+2. Ubuntu 24.04 Server Installation
+3. Mirror Server Setup
+4. DP Offline Ubuntu Upgrade
+5. Post-Upgrade Validation
+
+The active workflow covers:
+
+- Ubuntu 16.04 → 18.04 → 20.04 → 22.04 → 24.04 sequential OS upgrades
+- the current selective OS Core / Mirror Manager preparation workflow
+- DP **6.6.0** Phase 2 bringup on Ubuntu 24.04
+- AIO and DL/DA master/worker orchestration
+- HTTP distribution from the Mirror Server to DP hosts
+- validation, logs, retry, recovery, and troubleshooting
+
+Older 6.5.0, `apt-cacher-ng`, and traditional full-mirror material is retained only as historical/reference context and must not be mixed into the active runbook.
 
 This repository intentionally excludes private credentials, signing secrets, and environment-specific access information.
