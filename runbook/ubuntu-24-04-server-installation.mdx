@@ -97,6 +97,28 @@ Confirm:
 - SSH is active
 - the IP address is stable and reachable from the target DP network
 
+## Step 8 — Configure SSH client keepalive
+
+Long preparation and upgrade operations can leave an SSH terminal idle for extended periods. Configure keepalive on the **SSH client used to connect to the Mirror Server and DP hosts** so an intermediate firewall, NAT device, or idle-session policy is less likely to drop the session.
+
+For OpenSSH, add a host-specific entry to the operator workstation's `~/.ssh/config`:
+
+```sshconfig
+Host <mirror-or-dp-host>
+    ServerAliveInterval 60
+    ServerAliveCountMax 5
+```
+
+Or use the equivalent options for a one-time connection:
+
+```bash
+ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5 <user>@<host>
+```
+
+<Tip>
+SSH keepalive helps with idle-session timeouts. It does **not** prevent the expected disconnect when a DP reboots during an Ubuntu release hop. After an expected reboot, reconnect and continue from the next instruction printed by the current upgrade procedure.
+</Tip>
+
 ## Network note
 
 During preparation, the Mirror Server needs outbound HTTPS access to the current GitHub, Cloudflare R2, ACPS, and Ubuntu bootstrap destinations. During the DP upgrade, target DP hosts retrieve prepared material from the Mirror Server over **HTTP/TCP 80**.
