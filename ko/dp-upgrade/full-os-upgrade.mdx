@@ -1,0 +1,48 @@
+---
+title: "Full OS Upgrade + Phase 2"
+description: "Ubuntu 16.04에서 각 LTS Hop을 거쳐 24.04로 업그레이드한 뒤 DP 6.6.0 Bringup을 완료합니다."
+---
+
+# Full OS Upgrade + Phase 2
+
+아직 Ubuntu 16.04를 사용하는 지원 DP에 이 Mode를 사용합니다.
+
+## 전체 순서
+
+Menu 7이 현재 Release에 맞는 정확한 명령을 안내합니다. 개념적인 작업 흐름은 다음과 같습니다.
+
+1. 필요한 Hypervisor Snapshot 생성
+2. 지시에 따라 Ubuntu 16.04 DP Service Pause
+3. Ubuntu를 LTS 한 단계씩 순서대로 Upgrade
+4. Ubuntu 24.04 도달 및 검증
+5. 모든 필수 Node에 DP 6.6.0 Phase 2 File Staging
+6. 적절한 Master/AIO Node에서 최종 Phase 2 Bringup 실행
+7. Service Resume 및 DP/Cluster 검증
+
+OS Chain은 다음과 같이 고정됩니다.
+
+```text
+16.04 → 18.04 → 20.04 → 22.04 → 24.04
+```
+
+중간 LTS Hop을 건너뛰지 마십시오.
+
+## Phase 1은 OS 전용 단계
+
+현재 Phase 1 Tooling은 Operating System 성공과 DP Product Health를 분리해서 판단합니다. 중간 Release에서 전체 DP Runtime이 정상일 필요는 없습니다.
+
+특히 Ubuntu 22.04는 의도적인 Transition 상태일 수 있습니다. 일부 Build에서는 `aella_cli`, kubelet, Docker 또는 DP Workload가 정상적이지 않을 수 있습니다.
+
+Jammy를 정상처럼 보이게 만들기 위해 중간 Runtime을 임의로 Repair하지 마십시오. 검증된 OS 절차를 Ubuntu 24.04까지 계속하십시오. Phase 2가 DP Runtime을 다시 구성합니다.
+
+## State 및 Resume 동작
+
+Phase 1은 Durable State를 유지하며 Reboot/Resume Boundary를 지원합니다. 일시적인 Network, DNS, NTP, Package Lock 문제는 Retry 가능한 Blocked 상태가 될 수 있고 Integrity Conflict는 Fail Closed됩니다.
+
+State를 삭제하거나 임의로 새 Upgrade를 시작하지 말고 Release에서 생성한 Menu 7 명령과 Status/Log 출력을 사용하십시오.
+
+## 완료 경계
+
+Ubuntu 24.04 성공은 **전체 DP Upgrade 성공과 동일하지 않습니다.** Phase 1은 완료되었지만 Phase 2가 시작되지 않은 상태일 수 있습니다.
+
+Phase 2와 Post-upgrade Validation이 끝나기 전에는 DP를 정상 Service 상태로 복귀시키지 마십시오.
