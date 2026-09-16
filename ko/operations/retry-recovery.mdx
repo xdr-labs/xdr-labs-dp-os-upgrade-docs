@@ -1,0 +1,54 @@
+---
+title: "재시도 및 복구"
+description: "Mirror Manager Download를 안전하게 재개하고 Partial File을 보존하며 파괴적 DP 장애 시 Snapshot 복구를 사용합니다."
+---
+
+# 재시도 및 복구
+
+## SSH Disconnect로 Mirror Manager가 중단된 경우
+
+다시 접속하여 기존 설치를 실행합니다.
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+Terminal이 끊겼다는 이유만으로 재설치하지 마십시오.
+
+- Menu 2가 아직 실행 중이면 해당 Process가 끝날 때까지 기다립니다.
+- Menu 2가 완료되었다면 완료되지 않은 첫 Menu 단계부터 계속합니다.
+- Configuration과 Mirror Server IP가 변경되지 않았다면 이미 유효한 단계를 불필요하게 반복할 필요는 없습니다.
+
+실제 DP Upgrade 직전에 Menu 4를 다시 실행하면 최종 Readiness 확인에 도움이 됩니다.
+
+## Download가 중단된 경우
+
+Menu 2를 다시 실행합니다. 현재 Workflow는 유효한 Data를 재사용하고 Partial Download Resume을 지원합니다.
+
+처음부터 다시 시작하려고 ACPS `.part` 파일을 삭제하지 마십시오. 이 파일에는 Resume 가능한 Download 상태가 들어 있습니다.
+
+## 유용한 Mirror Server 진단 명령
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+ls -lt /var/log/ubuntu-mirror-automation/
+cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
+```
+
+## DP OS Upgrade State
+
+Phase 1 구현은 Durable State, Command Journal, Integrity Check 및 중앙 State Machine을 사용합니다. Evidence가 불일치하면 Fail Closed하도록 설계되어 있습니다.
+
+오류를 지우기 위해 `/opt/aelladata/os-upgrade`를 삭제하거나 남아 있는 Evidence 위에 임의로 Fresh Install을 수행하지 마십시오.
+
+Low-level Phase 1 Recovery는 현재 Release Tooling이 권장하는 Diagnostic 및 Recovery Action을 사용하십시오. Engineering 구현에는 Lock Recovery, 잘못된 Reboot-required 상태 복구, Resume-stage Recovery 등이 포함될 수 있지만 실제 작업자는 Release에서 생성한 절차를 따라야 합니다.
+
+## Rollback
+
+이 프로젝트는 OS 또는 DP Runtime Rollback 명령을 구현하지 않습니다.
+
+```text
+RECOVERY_METHOD=HYPERVISOR_SNAPSHOT
+```
+
+파괴적 장애를 안전하게 복구할 수 없다면 검증되지 않은 Package/Runtime Downgrade를 시도하지 말고 승인된 Pre-upgrade Hypervisor Snapshot을 Restore하십시오.
