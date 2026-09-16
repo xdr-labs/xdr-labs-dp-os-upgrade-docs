@@ -1,0 +1,202 @@
+---
+title: "4. DP 오프라인 Ubuntu 업그레이드"
+sidebarTitle: "4. DP 오프라인 Ubuntu 업그레이드"
+description: "Snapshot과 Pause부터 Ubuntu 24.04, DP 6.6.0 Bringup, Resume 및 Health Validation까지 생성된 DP 절차를 따라 수행합니다."
+---
+
+# 4. DP 오프라인 Ubuntu 업그레이드
+
+이 페이지는 실제 Production DP 작업 절차입니다. Mirror Server의 **Upgrade Readiness = PASS**를 확인하고 최신 **Menu 7 — DP Client Upgrade Commands**를 생성하기 전에는 시작하지 마십시오.
+
+## 가장 중요한 원칙
+
+**이 문서에서 Release별 Upgrade 명령을 복사하지 마십시오.** 현재 Mirror Manager가 현재 Mirror Server IP와 Cluster Configuration을 기준으로 생성한 Menu 7 출력을 사용하십시오.
+
+이 페이지는 **무엇을, 어디에서, 어떤 결과가 나올 때까지 수행해야 하는지**를 설명합니다.
+
+## Full Mode 작업 흐름
+
+Ubuntu 16.04에서 시작하는 DP의 전체 흐름은 다음과 같습니다.
+
+```text
+Snapshot / Safety Gate
+  → DP Service Pause
+  → 16.04 → 18.04
+  → 18.04 → 20.04
+  → 20.04 → 22.04
+  → 22.04 → 24.04
+  → DP 6.6.0 Phase 2 Staging
+  → DL Bringup
+  → DA Bringup
+  → Resume 및 최종 검증
+```
+
+DP가 이미 Ubuntu 24.04이고 **Phase 2 Only**를 선택했다면 OS Hop 단계는 건너뛰고 Menu 7이 생성한 Phase 2 명령을 따릅니다.
+
+## Step 1 — 필요한 Hypervisor Snapshot 생성
+
+파괴적 작업 전에 **모든 대상 DP VM**에 승인된 Full Snapshot/Backup을 생성합니다.
+
+VMware 예시:
+
+<img src="/images/google-sites/04-offline-dp-upgrade/2.png" alt="VMware Take Snapshot Menu" />
+
+Pre-upgrade 상태를 명확히 식별할 수 있는 이름을 지정합니다.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/3.png" alt="VMware Pre-upgrade Snapshot Name" />
+
+계속하기 전에 Snapshot이 실제로 생성되었는지 확인합니다.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/4.png" alt="Pre-upgrade Snapshot이 표시된 VMware Snapshot Manager" />
+
+이 프로젝트는 지원되는 OS 또는 DP Runtime Downgrade 명령을 제공하지 않습니다. 파괴적 장애를 현장에서 안전하게 복구할 수 없는 경우 승인된 Snapshot이 복구 경로입니다.
+
+## Step 2 — DP CLI에서 서비스 Pause
+
+Ubuntu 16.04 DP에서 `aella_cli`에 진입하여 DP 서비스를 Pause합니다. Linux Shell에서 `pause` 명령을 직접 실행하지 마십시오.
+
+예시:
+
+<img src="/images/google-sites/04-offline-dp-upgrade/5.png" alt="DP CLI Pause, Version 확인 및 Shell 진입" />
+
+Pause 작업이 완료될 때까지 기다린 후 첫 OS Hop을 시작합니다.
+
+## Step 3 — Ubuntu 16.04 → 18.04 업그레이드
+
+**Menu 7에 표시된 Step 2 / Xenial-to-Bionic 명령**을 사용합니다. 생성된 Command Block 전체를 정확히 복사하여 실행하십시오.
+
+Client는 Preflight를 수행하고 파괴적 업그레이드에 대한 명시적 확인을 요청합니다. Execution Plan을 읽고 현재 Client 화면에 표시된 Confirmation String을 정확히 입력합니다.
+
+업그레이드와 재부팅이 완료되면 OS Release를 확인합니다.
+
+```bash
+lsb_release -a
+```
+
+첫 Hop이 성공하면 Ubuntu 18.04가 표시되어야 합니다.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/9.png" alt="첫 Offline OS Upgrade Hop 후 Ubuntu 18.04" />
+
+## Step 4 — Ubuntu 18.04 → 20.04 업그레이드
+
+현재 Menu 7 출력으로 돌아가 이 Hop에 해당하는 **Bionic-to-Focal** 명령만 실행합니다.
+
+Upgrade Client가 Hop 완료 후 필요한 다음 작업을 출력할 수 있습니다. 출력된 지시사항을 표시된 순서대로 수행하십시오.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/11.png" alt="Bionic to Focal Offline Upgrade Confirmation" />
+
+현재 Release 절차에서 다음 OS Hop 전에 Power-off Snapshot/Checkpoint를 요구할 수 있습니다. Client가 해당 Gate를 출력하면 완료 전까지 다음 Hop을 시작하지 마십시오.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/12.png" alt="Ubuntu 20.04 도달 후 Post-hop Instruction" />
+
+## Step 5 — Ubuntu 20.04 → 22.04 업그레이드
+
+동일한 최신 Menu 7 출력에서 **Focal-to-Jammy** 명령을 실행합니다.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/14.png" alt="Focal to Jammy Offline Upgrade Confirmation" />
+
+### 중요: Jammy는 Transition 상태일 수 있습니다
+
+일부 DP Build에서 Ubuntu 22.04는 의도적인 Transition 상태일 수 있습니다. 이 단계에서는 전체 DP Runtime, `aella_cli`, kubelet, Docker 또는 Kubernetes가 정상적이지 않을 수 있습니다.
+
+**Jammy를 정상 상태로 보이게 하려고 DP Runtime을 임의로 복구하지 마십시오.** 검증된 OS Upgrade 절차를 계속하여 Ubuntu 24.04까지 진행하십시오. Phase 2가 DP Runtime을 다시 구성합니다.
+
+Upgrade Output에는 Phase 1 중 Product Validation을 수행하지 않았다는 안내가 명시적으로 표시될 수 있습니다.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/15.png" alt="Ubuntu 22.04 Phase 1 완료 및 다음 작업 안내" />
+
+## Step 6 — Ubuntu 22.04 → 24.04 업그레이드
+
+Menu 7이 생성한 **Jammy-to-Noble** 명령을 실행합니다.
+
+<img src="/images/google-sites/04-offline-dp-upgrade/17.png" alt="Jammy to Noble Offline Upgrade Confirmation" />
+
+재부팅 후 다음을 확인합니다.
+
+```bash
+cat /etc/os-release
+```
+
+Phase 2를 시작하기 전에 반드시 Ubuntu **24.04**가 표시되어야 합니다.
+
+> Ubuntu 24.04 성공은 **Phase 1 완료**를 의미합니다. DP Software Bringup까지 완료된 것은 아닙니다.
+
+## Step 7 — 모든 대상 노드에 DP 6.6.0 Phase 2 Staging
+
+현재 Menu 7이 생성한 Phase 2 Staging Command Block을 사용합니다.
+
+Cluster 구성에서는 다음 모든 노드에서 Common Staging/Preflight를 완료합니다.
+
+```text
+DL Master
+DL Worker(s)
+DA Master
+DA Worker(s)
+```
+
+필수 노드 중 하나라도 완료되지 않았다면 최종 Master Orchestration을 시작하지 마십시오.
+
+현재 Staging/Preflight Output이 해당 노드가 Bringup 준비 상태임을 표시할 때까지 기다립니다.
+
+> 업로드된 Screenshot 일부는 이전 6.5.0 개발 Workflow에서 캡처되었습니다. 이 Phase 2 절차에서는 의도적으로 사용하지 않습니다. 현재 Target은 **DP 6.6.0**입니다.
+
+## Step 8 — DL Cluster를 먼저 Bringup
+
+Worker가 있는 DL Cluster에서는 다음 순서로 진행합니다.
+
+1. DL Master와 모든 DL Worker의 Common Staging 완료 확인
+2. **DL Master에서만** 최종 생성된 Bringup/Orchestration 명령 실행
+3. Master가 설정된 DL Worker를 Orchestrate
+4. Bringup 결과 및 Cluster Readiness Check 완료까지 대기
+5. DL Cluster가 정상 상태가 되기 전에는 DA 작업을 시작하지 않음
+
+AIO 또는 Master-only 구성에서는 생성된 Single-node 명령을 따릅니다.
+
+## Step 9 — DA Cluster Bringup
+
+DL이 정상인 것을 확인한 후에만 진행합니다.
+
+1. DA Master와 모든 DA Worker의 Common Staging 완료 확인
+2. **DA Master에서만** 최종 생성 명령 실행
+3. 모든 DA Node와 필수 Service가 Ready 상태가 될 때까지 대기
+
+Master Orchestration 명령을 Worker Node에서 직접 실행하지 마십시오.
+
+## Step 10 — DP Service Resume
+
+Bringup이 성공적으로 완료된 후 시스템이 여전히 Pause 상태라면 생성된 절차에 따라 DP CLI에서 서비스를 Resume합니다.
+
+`resume` 직후 DP가 즉시 정상이라고 판단하지 마십시오. Pod와 Host Service가 시작될 시간을 준 뒤 `show status`를 다시 확인합니다.
+
+## Step 11 — Maintenance 종료 전 검증
+
+최소한 DP CLI에서 다음을 확인합니다.
+
+```text
+show version
+show status
+```
+
+최종 Target은 **Ubuntu 24.04 + DP 6.6.0**입니다.
+
+또한 다음을 확인합니다.
+
+- 예상한 모든 DL/DA Node가 Ready
+- 필수 Pod가 Running
+- Host Service가 Ready
+- DNS 설정 정상
+- NTP 동기화 정상
+- 필요한 경우 License/OTP 상태 정상
+- Web UI 및 일반 DP 기능 접근 가능
+
+최종 검증이 완료되고 승인된 Change/Maintenance 절차에서 정리를 허용하기 전에는 Recovery Snapshot을 삭제하지 마십시오.
+
+## 장애가 발생한 경우
+
+오류를 지우기 위해 `/opt/aelladata/os-upgrade`를 삭제하지 마십시오. 상태와 Log를 보존하고 DNS/NTP/Network/Package Lock과 같은 Retry 가능한 원인을 수정한 뒤 현재 Release의 Recovery Guidance를 따릅니다.
+
+자세한 내용은 **[문제 해결](/ko/operations/troubleshooting)** 및 **[재시도 및 복구](/ko/operations/retry-recovery)**를 확인하십시오.
+
+## 다음 단계
+
+Maintenance Window를 종료하기 전에 [**5. 업그레이드 후 검증**](/ko/runbook/post-upgrade-validation)을 수행하십시오.
