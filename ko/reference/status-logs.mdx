@@ -1,0 +1,65 @@
+---
+title: "Status 및 Log"
+description: "Mirror Server와 DP-side의 주요 Status File, 생성 명령 및 Phase 1 Evidence 위치입니다."
+---
+
+# Status 및 Log
+
+## Mirror Server
+
+GUI 실행:
+
+```bash
+sudo ubuntu-offline-mirror mirror-manager
+```
+
+주요 파일:
+
+```text
+/etc/ubuntu-mirror/dp-upgrade-mirror.conf
+/etc/ubuntu-mirror/dp-upgrade-mirror.status
+/var/log/ubuntu-mirror-automation/
+/var/log/ubuntu-mirror-automation/dp-client-upgrade-commands.txt
+```
+
+Configuration File에는 보호되어야 하는 Credential이 포함되어 있으므로 Root-owned 상태를 유지해야 합니다. Secret을 제거하지 않은 상태로 Public Ticket에 첨부하지 마십시오.
+
+## Mirror Manager Readiness
+
+Menu 4는 다음 상태를 표시할 수 있습니다.
+
+```text
+PASS
+NOT VERIFIED
+NOT READY
+FAIL
+```
+
+일반적으로 현재 Configuration이 `PASS`일 때만 DP Upgrade를 시작합니다.
+
+## DP Phase 1 Evidence
+
+현재 Phase 1 Engine은 Upgrade State와 Evidence를 다음 위치에 기록합니다.
+
+```text
+/var/log/aella/auto_os_upgrade.log
+/opt/aelladata/os-upgrade/state.json
+/opt/aelladata/os-upgrade/events.jsonl
+/opt/aelladata/os-upgrade/hops/
+/opt/aelladata/os-upgrade/reports/
+```
+
+State Machine에는 `BLOCKED`, `FAILED`, `PAUSED`, `RESUME_REQUIRED`, `COMPLETED` 등의 상태가 포함될 수 있습니다.
+
+Failed Upgrade를 Escalation할 때 이 Evidence를 보존하십시오. Retry를 강제로 수행하기 위해 State를 삭제하지 마십시오.
+
+## Application 검증
+
+Phase 2 이후 Release에서 요구하는 DP CLI 및 Platform Check를 수행합니다.
+
+```text
+show version
+show status
+```
+
+Cluster 구성에서는 Maintenance Window 종료 전에 모든 예상 Kubernetes Node와 Service를 확인하십시오.
