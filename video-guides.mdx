@@ -5,28 +5,67 @@ description: "Supplemental videos for the DP Ubuntu offline upgrade workflow."
 
 # Video Guides
 
-These videos are supplemental visual references for the DP Ubuntu upgrade workflow.
+Use these recordings as **visual supplements** after reading the numbered runbook. The written runbook and the current installed Mirror Manager remain the source of truth for release-specific commands.
 
-> **Operator rule:** if a video differs from the current Mirror Manager or this written runbook, follow the current installed Mirror Manager and the fresh Menu 7 output. Older recordings can show historical 6.5.0 screens or commands.
+<Warning>
+If a video differs from the current Mirror Manager, follow the current Mirror Manager and fresh Menu 7 output. Older recordings can show historical DP 6.5.0 screens or commands.
+</Warning>
 
 ## Video 1
 
-[Open the video on YouTube](https://www.youtube.com/watch?v=O3MyNXVAuzM)
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/O3MyNXVAuzM"
+  title="DP offline Ubuntu upgrade video guide 1"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+[Open Video 1 on YouTube](https://www.youtube.com/watch?v=O3MyNXVAuzM)
 
 ## Video 2
 
-[Open the video on YouTube](https://www.youtube.com/watch?v=o201yZxfVrU)
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/o201yZxfVrU"
+  title="DP offline Ubuntu upgrade video guide 2"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+[Open Video 2 on YouTube](https://www.youtube.com/watch?v=o201yZxfVrU)
 
 ## Video 3
 
-[Open the video on YouTube](https://www.youtube.com/watch?v=YdIm_yX7gdY)
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/YdIm_yX7gdY"
+  title="DP offline Ubuntu upgrade video guide 3"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
 
-## Recommended order
+[Open Video 3 on YouTube](https://www.youtube.com/watch?v=YdIm_yX7gdY)
 
-Read the runbook first, then use the videos to confirm the visual flow:
+## Recommended reading order
 
-1. [Upgrade Work Plan](/runbook/work-plan)
-2. [Ubuntu 24.04 Server Installation](/runbook/ubuntu-24-04-server-installation)
-3. [Mirror Server Setup](/runbook/mirror-server-setup)
-4. [DP Offline Ubuntu Upgrade](/runbook/offline-dp-upgrade)
-5. [Post-Upgrade Validation](/runbook/post-upgrade-validation)
+<Steps>
+  <Step title="Plan the work">
+    Read **[1. Upgrade Work Plan](/runbook/work-plan)** and confirm the correct upgrade path and recovery plan.
+  </Step>
+  <Step title="Build the Mirror Server">
+    Follow **[2. Ubuntu 24.04 Server Installation](/runbook/ubuntu-24-04-server-installation)** when a new server is required.
+  </Step>
+  <Step title="Prepare the upgrade content">
+    Complete **[3. Mirror Server Setup](/runbook/mirror-server-setup)** until Upgrade Readiness reports `PASS`.
+  </Step>
+  <Step title="Run the production upgrade">
+    Follow **[4. DP Offline Ubuntu Upgrade](/runbook/offline-dp-upgrade)** using fresh Menu 7 commands.
+  </Step>
+  <Step title="Validate and close">
+    Complete **[5. Post-Upgrade Validation](/runbook/post-upgrade-validation)** before ending the maintenance window.
+  </Step>
+</Steps>
