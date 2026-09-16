@@ -5,44 +5,56 @@ description: "Follow one ordered runbook to prepare the Mirror Server, upgrade D
 
 # DP Offline Ubuntu Upgrade Guide
 
-This site is designed to be followed **from top to bottom**. If this is your first time performing the upgrade, start with **Step 1** and continue in order.
+This site is an **operator runbook**. If this is your first time performing the upgrade, start with **Step 1** and continue in order. You should not need to assemble a procedure from separate technical pages.
 
-## What this guide does
+<Tip>
+**First time here?** Start with **[1. Upgrade Work Plan](/runbook/work-plan)**, then follow the numbered pages in the left navigation from top to bottom.
+</Tip>
 
-For the Full upgrade path:
+## The complete flow
 
 ```text
-Prepare Mirror Server
-  → DP Ubuntu 16.04
-  → 18.04
-  → 20.04
-  → 22.04
-  → 24.04
-  → DP 6.6.0 Phase 2
-  → Final validation
+Plan the work
+  → Build / verify Ubuntu 24.04 Mirror Server
+  → Prepare upgrade files and reach READINESS = PASS
+  → DP Ubuntu 16.04 → 18.04 → 20.04 → 22.04 → 24.04
+  → DP 6.6.0 Phase 2 bringup
+  → Final validation and approved snapshot cleanup
 ```
 
-The Mirror Server downloads and validates the required files in advance. During the upgrade, the DP hosts retrieve prepared material from that server over **HTTP/TCP 80**.
+The Mirror Server downloads and validates the required files in advance. During the production upgrade, DP hosts retrieve prepared material from that server over **HTTP/TCP 80**.
 
 ## Follow these five steps
 
-| Step | What you do | Finish condition |
-| --- | --- | --- |
-| **1. Upgrade Work Plan** | Choose the correct path, maintenance order, snapshots, and go/no-go gates | Plan and prerequisites confirmed |
-| **2. Ubuntu 24.04 Server Installation** | Build the Mirror Server when a new server is required | Ubuntu 24.04, disk, network, SSH verified |
-| **3. Mirror Server Setup** | Install Mirror Manager, prepare files, enable HTTP, verify readiness | **Upgrade Readiness = PASS** |
-| **4. DP Offline Ubuntu Upgrade** | Follow fresh Menu 7 commands through OS hops and Phase 2 | Ubuntu 24.04 + DP 6.6.0 bringup complete |
-| **5. Post-Upgrade Validation** | Verify OS, DP version, clusters, services, NTP/DNS, and operations | All required validation checks pass |
+<Columns cols={2}>
+  <Card title="1. Upgrade Work Plan" icon="clipboard-check" href="/runbook/work-plan">
+    Confirm the upgrade path, maintenance sequence, snapshots, cluster order, and go/no-go gates before touching any DP.
+  </Card>
+  <Card title="2. Ubuntu 24.04 Server Installation" icon="server" href="/runbook/ubuntu-24-04-server-installation">
+    Build the Mirror Server when a new server is required, then verify disk, network, and SSH access.
+  </Card>
+  <Card title="3. Mirror Server Setup" icon="download" href="/runbook/mirror-server-setup">
+    Install Mirror Manager, prepare the files, enable HTTP distribution, and reach **Upgrade Readiness = PASS**.
+  </Card>
+  <Card title="4. DP Offline Ubuntu Upgrade" icon="arrow-up-circle" href="/runbook/offline-dp-upgrade">
+    Use fresh Menu 7 commands for every OS hop and for DP 6.6.0 Phase 2 bringup.
+  </Card>
+  <Card title="5. Post-Upgrade Validation" icon="circle-check" href="/runbook/post-upgrade-validation">
+    Verify Ubuntu, DP version, DL/DA readiness, services, NTP/DNS, application health, and recovery-snapshot cleanup criteria.
+  </Card>
+</Columns>
 
-### Start here
-
-**[Step 1 — Upgrade Work Plan →](/runbook/work-plan)**
+<Warning>
+Do not begin DP-side work until the current Mirror Server configuration reports **Upgrade Readiness = PASS** and fresh Menu 7 commands have been generated.
+</Warning>
 
 ## Overall work plan
 
-The following example shows the complete flow for a 3-node DL cluster plus a 3-node DA cluster. The same ordering principles apply to smaller deployments; use the current Menu 7 output for the exact commands and node-specific procedure.
+The following example shows the complete flow for a **3-node DL cluster + 3-node DA cluster**. Smaller deployments follow the same stage order; use the current Menu 7 output for the exact commands and node-specific procedure.
 
-<img src="/images/google-sites/01-work-plan/1.png" alt="DP Ubuntu 24.04 offline upgrade work plan" />
+<Frame caption="Example end-to-end maintenance flow for a 6-node DP deployment">
+  <img src="/images/google-sites/01-work-plan/1.png" alt="DP Ubuntu 24.04 offline upgrade work plan" />
+</Frame>
 
 ## Which path applies to my DP?
 
@@ -52,17 +64,14 @@ The following example shows the complete flow for a 3-node DL cluster plus a 3-n
 | Supported DP 6.2–6.5 already on Ubuntu 24.04 | **Phase 2 Only** | DP 6.6.0 |
 | Healthy DP 6.6.0 on Ubuntu 24.04 | Normally no upgrade | No change |
 
-The current Mirror Manager target is **DP 6.6.0**. Do not mix historical 6.5.0 procedures into the active workflow.
+The current Mirror Manager target is **DP 6.6.0**. Historical screenshots or recordings may show 6.5.0; do not copy those release-specific commands into the active workflow.
 
 ## Three rules to remember
 
-1. **Prepare first.** Do not touch the DPs until the Mirror Server reports `Upgrade Readiness = PASS`.
-2. **Use fresh generated commands.** Menu 7 is the authoritative source for the current Mirror Server IP, preparation mode, and cluster configuration.
-3. **Keep recovery available.** Create the required hypervisor snapshot(s) before destructive work and keep them until final validation and change-control closure.
+1. **Prepare first.** Complete the Mirror Server work before the production maintenance window whenever possible.
+2. **Use fresh generated commands.** Menu 7 is the authoritative command source for the current Mirror Server IP, mode, and cluster configuration.
+3. **Keep recovery available.** Create the required hypervisor snapshot(s), follow any additional powered-off snapshot gate printed by the current upgrade client, and keep recovery points until final validation and change-control closure.
 
-## Need help during the procedure?
+## If something does not match the guide
 
-- **[Troubleshooting](/operations/troubleshooting)** — identify the failed layer and the next safe action
-- **[Retry & Recovery](/operations/retry-recovery)** — interrupted downloads, Phase 1 state, and snapshot recovery
-- **[Video Guides](/video-guides)** — supplemental visual references
-- **Advanced / Reference** in the sidebar — implementation details, network, storage, logs, clusters, and historical guidance
+Use **[Troubleshooting](/operations/troubleshooting)** for the failed layer, **[Retry & Recovery](/operations/retry-recovery)** for interrupted operations or Phase 1 state, and **[Video Guides](/video-guides)** for supplemental visual references. Lower-level implementation material is separated into the **Reference** tab so the numbered runbook remains the primary operator path.
