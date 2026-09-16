@@ -1,0 +1,56 @@
+---
+title: "HTTP Distribution 및 Readiness"
+description: "준비된 파일을 nginx로 Publish하고 DP Upgrade 시작 전에 Live Artifact를 검증합니다."
+---
+
+# HTTP Distribution 및 Readiness
+
+Menu 2가 성공적으로 끝난 후 준비된 Content를 Publish하고 검증합니다.
+
+## Menu 3 — Enable HTTP Distribution
+
+이 단계는 실제 nginx Configuration 및 Validation 작업입니다.
+
+- 준비된 Directory Layout 검증
+- nginx Site 설치 및 Enable
+- `nginx -t` 실행
+- nginx Start 또는 Reload
+- Live HTTP Check 수행
+
+DP-side Path는 다음과 같이 단순합니다.
+
+```text
+DP Host  --->  http://<MIRROR_SERVER_IP>:80
+```
+
+## Menu 4 — Verify Upgrade Readiness
+
+Menu 4는 선택한 Preparation Mode에 필요한 Live HTTP File을 확인합니다.
+
+가능한 Readiness 상태:
+
+```text
+PASS
+NOT VERIFIED
+NOT READY
+FAIL
+```
+
+정상적인 DP-side Upgrade 진행 조건은 `PASS`입니다.
+
+## Readiness가 Stale이 될 수 있는 이유
+
+이전에 `[COMPLETED]`로 표시되었더라도 Configuration, Artifact, HTTP 상태 또는 Mirror Server IP가 변경되면 무효화될 수 있습니다.
+
+Source Update 후 의도적으로 Reinstall하거나 Server IP를 변경했다면 필요한 Preparation/Publish/Readiness 단계를 다시 수행하십시오.
+
+## 최종 작업 Gate
+
+Menu 7을 열기 전에 다음을 확인합니다.
+
+- Menu 2 성공 완료
+- nginx Distribution 활성화
+- Menu 4 = `PASS`
+- 설정된 Mirror Server IP가 실제 대상 DP가 사용할 주소임
+
+그 다음 Menu 7에서 최신 DP-side 명령을 생성하십시오.
