@@ -1,0 +1,44 @@
+---
+title: "DP Client Upgrade 명령"
+description: "Menu 7을 DP-side 명령과 Cluster 실행 순서의 기준으로 사용합니다."
+---
+
+# DP Client Upgrade 명령
+
+Menu 4가 `PASS`를 표시한 후에만 **Menu 7 — Show DP Client Upgrade Commands**를 엽니다.
+
+Menu 7은 현재 Preparation Mode, Mirror Server IP, Cluster Configuration을 기준으로 명령을 생성합니다. Release 절차에서 명시적으로 요구하지 않는 한 동등한 명령을 수동으로 조립하지 마십시오.
+
+생성된 출력은 다음 파일에도 저장됩니다.
+
+```text
+/var/log/ubuntu-mirror-automation/dp-client-upgrade-commands.txt
+```
+
+## Cluster 실행 방식
+
+Cluster 구성에서는 Common Node Preparation과 최종 Master Orchestration이 분리됩니다.
+
+| 단계 | 실행 대상 |
+| --- | --- |
+| Common Step 1–6 | DL Master + 모든 DL Worker + DA Master + 모든 DA Worker |
+| 최종 DL Step | DL Master만 |
+| 최종 DA Step | DA Master만 |
+
+Preparation Mode에 따라 Menu 7에 표시되는 정확한 Step Number는 달라질 수 있습니다. 실제 생성된 출력을 따르십시오.
+
+핵심 규칙:
+
+- 먼저 **모든** 대상 Node에서 Common Staging/Prerequisite Step 완료
+- DL Master에서 설정된 DL Worker를 포함한 최종 Bringup 실행
+- DA Master에서 설정된 DA Worker를 포함한 최종 Bringup 실행
+- Worker에서 최종 Master Orchestration Step을 직접 실행하지 않음
+- AIO/Single-node에서는 Worker Flag 또는 Worker Password가 추가되지 않음
+
+## Mirror Server IP 변경 시
+
+이전에 생성된 명령을 재사용하지 마십시오. 저장된 Mirror Server IP를 변경하고 필요한 Preparation/Publish/Readiness 단계를 다시 수행한 뒤 새 Menu 7 출력을 생성하십시오.
+
+## Security
+
+Menu 7에는 환경별 Command Material이 포함될 수 있습니다. 생성된 파일을 운영 데이터로 취급하고 Password, Token 또는 내부 Credential을 외부 Ticket이나 공개 문서에 노출하지 마십시오.
