@@ -1,0 +1,66 @@
+---
+title: "사전 준비사항"
+description: "Mirror Server, DP Snapshot, Network, Credential 및 Cluster Configuration을 업그레이드 전에 확인합니다."
+---
+
+# 사전 준비사항
+
+Production DP Upgrade를 준비하거나 실행하기 전에 아래 항목을 완료하십시오.
+
+## Mirror Server
+
+다음 조건을 갖춘 깨끗한 Ubuntu 24.04 LTS amd64 Server를 사용합니다.
+
+- 최소 2 vCPU, 권장 4 vCPU
+- 최소 4 GB RAM, 권장 8 GB RAM
+- 현재 Artifact 기준 총 100 GB Disk
+- 모든 대상 DP에서 접근 가능한 고정 IPv4
+- GitHub, R2, ACPS, Ubuntu Bootstrap Destination으로 Outbound HTTPS
+
+Mirror Server는 DP Host에 TCP 80으로 파일을 제공할 수 있어야 합니다.
+
+## Credential
+
+Menu 2 실행 전에 다음 정보를 준비하십시오.
+
+- ACPS Username
+- ACPS Password
+- DL/DA Worker가 설정된 경우 공통 `aella` Worker SSH Password
+
+Password나 Token을 문서, 공개 Ticket 또는 불필요한 Shell History에 남기지 마십시오.
+
+## DP Snapshot
+
+파괴적 업그레이드 전에 **모든 DP VM의 Full Hypervisor Snapshot**을 생성하십시오.
+
+이 프로젝트는 지원되는 OS 또는 DP Runtime Rollback 명령을 제공하지 않습니다. 파괴적 장애를 현장에서 안전하게 복구할 수 없는 경우 Snapshot Restore가 복구 방법입니다.
+
+## 올바른 Mode 선택
+
+현재 DP OS 상태를 확인하여 다음 중 하나를 선택합니다.
+
+- Ubuntu 16.04의 지원 DP: **Full OS Upgrade + Phase 2**
+- 이미 Ubuntu 24.04인 지원 DP: **Phase 2 Only**
+
+현재 Target은 DP **6.6.0**입니다.
+
+## Cluster 정보
+
+DL/DA Cluster에서는 다음을 준비하십시오.
+
+- DL Worker Management IP
+- DA Worker Management IP
+- 공통 `aella` Worker Password
+- 정상 Master-to-Worker 연결
+
+Worker List에는 Master IP를 포함하지 마십시오.
+
+## 최종 실행 Gate
+
+다음 조건을 모두 만족하기 전에는 DP-side 명령을 시작하지 마십시오.
+
+1. Configuration 저장 완료
+2. Download and Prepare 완료
+3. HTTP Distribution 활성화
+4. Verify Upgrade Readiness = `PASS`
+5. 현재 Configuration 기준 Menu 7 명령 생성 완료
