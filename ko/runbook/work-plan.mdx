@@ -39,8 +39,8 @@ Ubuntu 16.04의 DP 6.2.x–6.5.0
 | --- | --: | --- |
 | Mirror Server 준비 | **2–3시간** | Production Maintenance Window 이전 |
 | DP 사전 점검 및 서비스 Pause | **약 30분** | Maintenance 시작 시점 |
-| 전체 노드 Ubuntu OS 업그레이드 | **약 1.5–2시간** | Maintenance Window |
-| 전원 OFF Snapshot/Checkpoint Gate | **약 30분** | 현재 절차에서 요구하는 경우 |
+| 전원 OFF Snapshot/Checkpoint Gate | **약 30분** | DP 사전 점검 및 서비스 Pause 완료 후, Ubuntu 업그레이드 전 |
+| 전체 노드 Ubuntu OS 업그레이드 | **약 1.5–2시간** | Snapshot/Checkpoint Gate 완료 후 |
 | 전체 노드 Phase 2 Staging | **약 2시간** | Maintenance Window, 네트워크 여유 시간 포함 권장 |
 | DL Cluster Bringup | **약 2시간** | Staging 완료 후 |
 | DA Cluster Bringup | **약 2시간** | DL 정상 확인 후 |
@@ -58,14 +58,14 @@ Ubuntu 16.04의 DP 6.2.x–6.5.0
   <Step title="서비스 중단 전에 Mirror Server 준비">
     Configuration, Download/Prepare, HTTP Distribution, Readiness 검증을 완료하고 최신 DP Client 명령을 생성합니다. 필수 Gate는 **Upgrade Readiness = PASS**입니다.
   </Step>
-  <Step title="DP 사전 점검 및 복구 수단 확보">
-    연결 상태와 현재 버전을 확인하고 필요한 Pre-upgrade Hypervisor Snapshot을 생성합니다. DP 서비스는 현재 생성된 절차에서 지시할 때만 Pause합니다.
+  <Step title="DP 사전 점검 및 서비스 Pause">
+    연결 상태와 현재 버전을 확인하고, 현재 생성된 절차에서 지시하는 경우 DP 서비스를 Pause합니다. Snapshot/Checkpoint에 들어가기 전에 사전 점검과 Pause가 완료되어야 합니다.
+  </Step>
+  <Step title="전원 OFF Snapshot/Checkpoint Gate 수행">
+    DP 사전 점검 및 서비스 Pause 완료 후, 현재 Upgrade Client가 Shutdown 후 Snapshot/Checkpoint 생성을 요구하면 필요한 모든 노드에서 해당 Gate를 완료합니다. 이 Gate가 끝나기 전에는 Ubuntu 업그레이드를 시작하지 않습니다.
   </Step>
   <Step title="모든 대상 노드의 Ubuntu 업그레이드">
-    `16.04 → 18.04 → 20.04 → 22.04 → 24.04` 순서대로 수행합니다. 각 Hop은 별도의 통제된 전환 단계입니다.
-  </Step>
-  <Step title="필요한 전원 OFF Snapshot Gate 수행">
-    현재 Upgrade Client가 다음 단계 전에 Shutdown 후 Snapshot/Checkpoint 생성을 요구하면, 필요한 모든 노드에서 해당 Gate를 완료한 후 진행합니다.
+    Snapshot/Checkpoint Gate 완료 후 `16.04 → 18.04 → 20.04 → 22.04 → 24.04` 순서대로 수행합니다. 각 Hop은 별도의 통제된 전환 단계입니다.
   </Step>
   <Step title="모든 대상 노드에 DP 6.6.0 Phase 2 Staging">
     최종 Cluster Orchestration 전에 DL Master, DL Worker, DA Master, DA Worker의 Staging/Preflight를 모두 완료합니다.
@@ -93,8 +93,8 @@ Ubuntu 16.04의 DP 6.2.x–6.5.0
 | --- | --- |
 | Mirror Server | `Upgrade Readiness = PASS` |
 | 생성 명령 | 현재 Mirror Server IP 기준 최신 Menu 7 출력 |
-| Phase 1 | 모든 대상 노드에서 Ubuntu 24.04 검증 완료 |
-| Snapshot/Checkpoint Gate | 현재 Client가 명시적으로 요구한 Snapshot 작업 완료 |
+| Snapshot/Checkpoint Gate | DP 사전 점검 및 서비스 Pause 이후, 현재 Client가 명시적으로 요구한 Snapshot 작업 완료 |
+| Phase 1 | Snapshot/Checkpoint Gate 이후 모든 대상 노드에서 Ubuntu 24.04 검증 완료 |
 | Phase 2 Staging | Staging/Preflight가 Bringup 준비 완료 상태 |
 | DL Bringup | DA 시작 전에 DL Bringup 성공 완료 |
 | 최종 검증 | DP 6.6.0 및 모든 필수 Cluster/Service 정상 |
