@@ -39,8 +39,8 @@ For the illustrated **3-node DL + 3-node DA** example, use the following as plan
 | --- | ---: | --- |
 | Prepare Mirror Server | **2–3 hours** | Before the production maintenance window |
 | DP pre-checks and service pause | **~30 minutes** | Start of maintenance |
-| Ubuntu OS upgrade block on all nodes | **~1.5–2 hours** | Maintenance window |
-| Powered-off snapshot/checkpoint gate | **~30 minutes** | When required by the current procedure |
+| Powered-off snapshot/checkpoint gate | **~30 minutes** | After DP pre-checks and service pause, before the Ubuntu upgrade |
+| Ubuntu OS upgrade block on all nodes | **~1.5–2 hours** | After the snapshot/checkpoint gate |
 | Phase 2 staging on all nodes | **~2 hours** | Maintenance window; allow network contingency |
 | DL cluster bringup | **~2 hours** | After staging |
 | DA cluster bringup | **~2 hours** | After DL is healthy |
@@ -58,14 +58,14 @@ Do not compress the maintenance plan by skipping an Ubuntu LTS hop or by startin
   <Step title="Prepare the Mirror Server before downtime">
     Complete configuration, download/prepare, HTTP distribution, readiness validation, and generate fresh DP client commands. The required gate is **Upgrade Readiness = PASS**.
   </Step>
-  <Step title="Pre-check the DPs and protect recovery">
-    Confirm connectivity and current versions, create the required pre-upgrade hypervisor snapshot(s), and pause DP services only when the current generated procedure tells you to.
+  <Step title="Pre-check the DPs and pause services">
+    Confirm connectivity and current versions, and pause DP services when the current generated procedure instructs you to. Pre-checks and the service pause must be complete before entering the snapshot/checkpoint gate.
+  </Step>
+  <Step title="Satisfy the powered-off snapshot/checkpoint gate">
+    After DP pre-checks and the service pause, if the current upgrade client instructs you to shut down and create a powered-off snapshot/checkpoint, complete that gate on every required node. Do not start the Ubuntu upgrade until this gate is complete.
   </Step>
   <Step title="Upgrade Ubuntu on every required node">
-    Follow `16.04 → 18.04 → 20.04 → 22.04 → 24.04` in order. Each hop is a separate controlled transition.
-  </Step>
-  <Step title="Satisfy any powered-off snapshot gate">
-    If the current upgrade client instructs you to shut down and create a powered-off snapshot/checkpoint before continuing, complete that gate on the required nodes before the next stage.
+    After the snapshot/checkpoint gate, follow `16.04 → 18.04 → 20.04 → 22.04 → 24.04` in order. Each hop is a separate controlled transition.
   </Step>
   <Step title="Stage DP 6.6.0 Phase 2 on every required node">
     Complete staging/preflight on the DL master, DL workers, DA master, and DA workers before final cluster orchestration.
@@ -93,8 +93,8 @@ Do not move to the next major stage unless the current stage is complete:
 | --- | --- |
 | Mirror Server | `Upgrade Readiness = PASS` |
 | Generated commands | Fresh Menu 7 output for the current Mirror Server IP |
-| Phase 1 | Ubuntu 24.04 validated on every required node |
-| Snapshot/checkpoint gate | Any snapshot action explicitly required by the current client is complete |
+| Snapshot/checkpoint gate | After DP pre-checks and service pause, any snapshot action explicitly required by the current client is complete |
+| Phase 1 | Ubuntu 24.04 validated on every required node after the snapshot/checkpoint gate |
 | Phase 2 staging | Staging/preflight reports ready for bringup |
 | DL bringup | DL bringup completes successfully before DA starts |
 | Final validation | DP 6.6.0 and all required cluster/services healthy |
