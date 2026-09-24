@@ -22,7 +22,7 @@ The current workflow uses:
 - **DP 6.6.0** as the fixed Phase 2 target
 - one Mirror Manager GUI
 - a selective OS Core package from Cloudflare R2 in Full mode
-- DP Phase 2 artifacts from ACPS
+- DP Phase 2 artifacts from the immutable Cloudflare R2 release prefix
 - nginx HTTP distribution to DP hosts over TCP 80
 - generated Menu 7 DP client commands
 
@@ -35,6 +35,7 @@ Older documents may describe:
 - an `apt-cacher-ng` cache server on TCP 3142
 - a traditional full Ubuntu `apt-mirror` requiring hundreds of GB or multiple TB
 - direct Canonical repository access from each DP
+- direct ACPS runtime downloads for DP Phase 2 artifacts
 
 Those procedures correspond to earlier development/QA stages and should not be mixed into the active Mirror Manager workflow unless engineering explicitly asks for a historical path.
 
