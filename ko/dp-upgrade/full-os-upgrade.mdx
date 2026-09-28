@@ -37,7 +37,7 @@ Jammy를 정상처럼 보이게 만들기 위해 중간 Runtime을 임의로 Rep
 
 ## State 및 Resume 동작
 
-Phase 1은 Durable State를 유지하며 Reboot/Resume Boundary를 지원합니다. 일시적인 Network, DNS, NTP, Package Lock 문제는 Retry 가능한 Blocked 상태가 될 수 있고 Integrity Conflict는 Fail Closed됩니다.
+Phase 1은 진행 상태를 저장하므로 재부팅 후 이어서 실행할 수 있습니다. 일시적인 네트워크, DNS, NTP, 패키지 잠금 문제는 해결 후 다시 시도할 수 있는 차단 상태로 남습니다. 반면 기록 무결성이 맞지 않으면 안전을 위해 작업을 중단합니다.
 
 State를 삭제하거나 임의로 새 Upgrade를 시작하지 말고 Release에서 생성한 Menu 7 명령과 Status/Log 출력을 사용하십시오.
 
