@@ -5,7 +5,7 @@ description: "Mirror Manager를 설치하고 업그레이드 파일을 준비해
 
 # 3. Mirror Server 설치 및 준비
 
-가능하면 **DP Maintenance Window 시작 전에 이 페이지의 작업을 모두 완료**하십시오. 목표는 간단합니다. DP를 작업하기 전에 Mirror Server가 **Upgrade Readiness = PASS**를 표시하고 최신 DP Client 명령을 생성해야 합니다.
+가능하면 **DP 유지보수 작업을 시작하기 전에 이 페이지의 준비를 모두 마치십시오.** DP에 손대기 전 미러 서버가 **Upgrade Readiness = PASS**를 표시하고 최신 DP Client 명령을 생성한 상태여야 합니다.
 
 ## 시작 전 확인
 
@@ -128,7 +128,7 @@ Main Menu에서 **Menu 2 — Download and Prepare Upgrade Files**를 선택합�
 
 <img src="/images/google-sites/03-mirror-server-setup/11.png" alt="Mirror Manager Download and Prepare 확인" />
 
-이 단계는 시간이 걸릴 수 있습니다. 대용량 Download, Checksum Validation, Bundle 작업 동안 Progress 또는 Heartbeat Message가 출력됩니다. SSH Session이 끊기면 재설치하지 말고 다시 접속하여 Mirror Manager를 실행하십시오.
+이 단계는 시간이 걸릴 수 있습니다. 대용량 다운로드, 체크섬 검증, 번들 처리 중에는 진행 상황이나 heartbeat 메시지가 표시됩니다. SSH 연결이 끊겨도 재설치하지 말고 다시 접속해 Mirror Manager를 실행하십시오.
 
 현재 Workflow는 이미 검증된 완료 파일과 Partial Download Data를 재사용할 수 있습니다. 강제로 다시 시작하려고 `.part` 파일을 삭제하지 마십시오.
 
