@@ -1,6 +1,6 @@
 ---
 title: "1. 업그레이드 작업 계획"
-description: "전체 유지보수 흐름을 이해하고 올바른 업그레이드 경로를 선택한 뒤 DP 작업 전에 Mirror Server를 준비합니다."
+description: "전체 유지보수 흐름과 업그레이드 경로를 확인하고, DP 작업 전에 미러 서버와 복구 계획을 준비합니다."
 ---
 
 # 1. 업그레이드 작업 계획
@@ -37,9 +37,9 @@ Ubuntu 16.04의 DP 6.2.x–6.5.0
 
 | 단계 | 예시 소요 시간 | 수행 시점 |
 | --- | --: | --- |
-| Mirror Server 준비 | **2–3시간** | Production Maintenance Window 이전 |
+| 미러 서버 준비 | **2–3시간** | 운영 유지보수 시간 전에 완료 |
 | DP 사전 점검 및 서비스 Pause | **약 30분** | Maintenance 시작 시점 |
-| 전원 OFF Snapshot/Checkpoint Gate | **약 30분** | DP 사전 점검 및 서비스 Pause 완료 후, Ubuntu 업그레이드 전 |
+| 전원 OFF 스냅샷/체크포인트 확인 | **약 30분** | DP 사전 점검 및 서비스 중지 완료 후, Ubuntu 업그레이드 전 |
 | 전체 노드 Ubuntu OS 업그레이드 | **약 1.5–2시간** | Snapshot/Checkpoint Gate 완료 후 |
 | 전체 노드 Phase 2 Staging | **약 2시간** | Maintenance Window, 네트워크 여유 시간 포함 권장 |
 | DL Cluster Bringup | **약 2시간** | Staging 완료 후 |

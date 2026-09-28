@@ -1,6 +1,6 @@
 ---
 title: "상세 업그레이드 후 검증"
-description: "Ubuntu 24.04, DP 6.6.0, Cluster Readiness, Service 및 최종 작업 상태를 상세히 검증합니다."
+description: "Ubuntu 24.04, DP 6.6.0, 클러스터 상태, 서비스와 최종 작업 상태를 상세히 확인합니다."
 ---
 
 # 상세 업그레이드 후 검증
@@ -14,11 +14,11 @@ cat /etc/os-release
 uname -r
 ```
 
-Node가 Ubuntu 24.04와 예상 Kernel을 실행하고 있는지 확인합니다.
+각 노드가 Ubuntu 24.04와 예상한 커널을 실행하고 있는지 확인합니다.
 
-## DP Version 및 Status
+## DP 버전 및 상태
 
-DP CLI에서 Target Release와 Platform 상태를 확인합니다.
+DP CLI에서 대상 릴리스와 플랫폼 상태를 확인합니다.
 
 ```text
 show version

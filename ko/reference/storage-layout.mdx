@@ -1,9 +1,9 @@
 ---
-title: "Storage 및 Filesystem"
-description: "현재 검증된 Disk 기준, Artifact 크기 및 Filesystem 제약사항입니다."
+title: "스토리지 및 파일시스템"
+description: "검증된 디스크 기준, 업그레이드 파일 크기, 파일시스템 제약사항을 정리합니다."
 ---
 
-# Storage 및 Filesystem
+# 스토리지 및 파일시스템
 
 ## 현재 기준
 
@@ -17,7 +17,7 @@ description: "현재 검증된 Disk 기준, Artifact 크기 및 Filesystem 제�
 | DP 6.6.0 Phase 2 Bundle | 28.2 GiB |
 | Fresh Download and Prepare Peak | 약 70 GiB |
 
-Application은 보수적인 Free-space Preflight를 수행하고 Safety Reserve를 유지합니다. 향후 Artifact Set은 커질 수 있으므로 100 GB는 현재 기준이며 영구적인 Sizing 보장은 아닙니다.
+애플리케이션은 업그레이드 전에 여유 공간을 보수적으로 확인하고 안전 여유분을 남깁니다. 향후 필요한 파일이 늘어날 수 있으므로 100 GB는 현재 기준일 뿐 영구적인 용량 보장은 아닙니다.
 
 ## 선택적 별도 Data Disk
 

@@ -1,6 +1,6 @@
 ---
 title: "DP 오프라인 Ubuntu 업그레이드 가이드"
-description: "Mirror Server 준비부터 DP Ubuntu 24.04 업그레이드, DP 6.6.0 Bringup, 최종 검증까지 순서대로 따라가는 작업 가이드입니다."
+description: "미러 서버 준비부터 DP의 Ubuntu 24.04 업그레이드, DP 6.6.0 적용, 최종 검증까지 순서대로 안내합니다."
 ---
 
 # DP 오프라인 Ubuntu 업그레이드 가이드
@@ -22,14 +22,14 @@ Mirror Server 준비
   → 최종 검증
 ```
 
-Mirror Server는 필요한 파일을 미리 다운로드하고 검증합니다. 실제 업그레이드 중 DP는 **HTTP/TCP 80**을 통해 Mirror Server에서 준비된 파일을 가져옵니다.
+미러 서버는 필요한 파일을 미리 내려받아 검증합니다. 실제 업그레이드 중 DP는 **HTTP/TCP 80**을 통해 미러 서버에서 준비된 파일을 가져옵니다.
 
 ## 아래 5단계만 순서대로 따라 하십시오
 
 | 단계 | 수행 작업 | 완료 조건 |
 | --- | --- | --- |
-| **1. 업그레이드 작업 계획** | 적용 경로, 작업 순서, Snapshot, Go/No-Go 조건 확인 | 작업 계획과 사전 조건 확인 완료 |
-| **2. Ubuntu 24.04 서버 설치** | 새 Mirror Server가 필요할 때 Ubuntu 24.04 서버 구축 | OS, 디스크, 네트워크, SSH 확인 완료 |
+| **1. 업그레이드 작업 계획** | 적용 경로, 작업 순서, 스냅샷, 진행/중단 조건 확인 | 작업 계획과 사전 조건 확인 완료 |
+| **2. Ubuntu 24.04 서버 설치** | 새 미러 서버가 필요할 때 Ubuntu 24.04 서버 구축 | OS, 디스크, 네트워크, SSH 확인 완료 |
 | **3. Mirror Server 설치 및 준비** | Mirror Manager 설치, 파일 준비, HTTP 배포, Readiness 확인 | **Upgrade Readiness = PASS** |
 | **4. DP 오프라인 Ubuntu 업그레이드** | Menu 7에서 생성된 최신 명령으로 OS Hop과 Phase 2 수행 | Ubuntu 24.04 + DP 6.6.0 Bringup 완료 |
 | **5. 업그레이드 후 검증** | OS, DP 버전, Cluster, 서비스, NTP/DNS, 운영 상태 확인 | 모든 필수 검증 항목 PASS |
