@@ -1,17 +1,17 @@
 ---
 title: "Full OS Upgrade + Phase 2"
-description: "Ubuntu 16.04에서 각 LTS Hop을 거쳐 24.04로 업그레이드한 뒤 DP 6.6.0 Bringup을 완료합니다."
+description: "Ubuntu 16.04에서 각 LTS 버전을 순서대로 거쳐 24.04로 업그레이드한 뒤 DP 6.6.0 Phase 2를 완료합니다."
 ---
 
 # Full OS Upgrade + Phase 2
 
-아직 Ubuntu 16.04를 사용하는 지원 DP에 이 Mode를 사용합니다.
+아직 Ubuntu 16.04를 사용하는 지원 대상 DP에는 이 모드를 사용합니다.
 
 ## 전체 순서
 
-Menu 7이 현재 Release에 맞는 정확한 명령을 안내합니다. 개념적인 작업 흐름은 다음과 같습니다.
+Menu 7에서 현재 릴리스에 맞는 정확한 명령을 확인할 수 있습니다. 전체 작업 흐름은 다음과 같습니다.
 
-1. 필요한 Hypervisor Snapshot 생성
+1. 필요한 하이퍼바이저 스냅샷 생성
 2. 지시에 따라 Ubuntu 16.04 DP Service Pause
 3. Ubuntu를 LTS 한 단계씩 순서대로 Upgrade
 4. Ubuntu 24.04 도달 및 검증
@@ -37,7 +37,7 @@ Jammy를 정상처럼 보이게 만들기 위해 중간 Runtime을 임의로 Rep
 
 ## State 및 Resume 동작
 
-Phase 1은 Durable State를 유지하며 Reboot/Resume Boundary를 지원합니다. 일시적인 Network, DNS, NTP, Package Lock 문제는 Retry 가능한 Blocked 상태가 될 수 있고 Integrity Conflict는 Fail Closed됩니다.
+Phase 1은 진행 상태를 저장하므로 재부팅 후 이어서 실행할 수 있습니다. 일시적인 네트워크, DNS, NTP, 패키지 잠금 문제는 해결 후 다시 시도할 수 있는 차단 상태로 남습니다. 반면 기록 무결성이 맞지 않으면 안전을 위해 작업을 중단합니다.
 
 State를 삭제하거나 임의로 새 Upgrade를 시작하지 말고 Release에서 생성한 Menu 7 명령과 Status/Log 출력을 사용하십시오.
 

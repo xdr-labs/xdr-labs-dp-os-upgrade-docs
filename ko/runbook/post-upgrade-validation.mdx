@@ -1,6 +1,6 @@
 ---
 title: "5. 업그레이드 후 검증"
-description: "Ubuntu 24.04, DP 6.6.0, Cluster Readiness, 서비스, NTP, DNS 및 Recovery Snapshot 정리 조건을 확인합니다."
+description: "Ubuntu 24.04, DP 6.6.0, 클러스터 상태, 서비스, NTP, DNS를 확인하고 복구용 스냅샷 정리 조건을 점검합니다."
 ---
 
 # 5. 업그레이드 후 검증
@@ -16,7 +16,7 @@ cat /etc/os-release
 uname -r
 ```
 
-업그레이드된 모든 대상 노드가 **Ubuntu 24.04**와 예상 Kernel을 사용하고 있는지 확인합니다.
+업그레이드된 모든 대상 노드가 **Ubuntu 24.04**와 예상한 커널을 사용하고 있는지 확인합니다.
 
 ## 2 — DP Version 및 Status 확인
 
@@ -27,7 +27,7 @@ show version
 show status
 ```
 
-현재 Mirror Manager Workflow의 Application Target은 다음과 같습니다.
+현재 Mirror Manager가 적용하는 대상 버전은 다음과 같습니다.
 
 ```text
 DP 6.6.0

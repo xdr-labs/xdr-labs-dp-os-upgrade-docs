@@ -32,7 +32,7 @@ sudo ubuntu-offline-mirror mirror-manager
 
 ## Why Menu 2 is repeated
 
-The current implementation reuses already prepared local artifacts where they remain valid, but it rebuilds client-side files that embed the Mirror Server IP.
+Prepared files are reused when they are still valid. Client-side files that contain the Mirror Server IP are regenerated after the move.
 
 Do not reuse commands generated before the IP change.
 

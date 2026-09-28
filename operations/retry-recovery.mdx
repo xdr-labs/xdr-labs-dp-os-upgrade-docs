@@ -37,7 +37,7 @@ cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
 
 ## DP OS-upgrade state
 
-The Phase 1 implementation uses durable state, command journals, integrity checks, and a central state machine. It is designed to fail closed when evidence is inconsistent.
+Phase 1 saves its state and command history, checks file integrity, and tracks progress through a central state machine. If the saved state and validation results disagree, it stops instead of continuing with uncertain data.
 
 Do not delete `/opt/aelladata/os-upgrade` or invent a fresh install over orphaned evidence merely to clear an error.
 

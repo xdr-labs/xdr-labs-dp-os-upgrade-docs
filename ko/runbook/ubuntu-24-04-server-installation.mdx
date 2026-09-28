@@ -1,11 +1,11 @@
 ---
 title: "2. Ubuntu 24.04 서버 설치"
-description: "충분한 디스크 공간, SSH 접속, 정상적인 Root Filesystem을 갖춘 Ubuntu 24.04 Mirror Server를 설치합니다."
+description: "충분한 디스크 공간과 SSH 접속 환경을 갖춘 Ubuntu 24.04 미러 서버를 설치합니다."
 ---
 
 # 2. Ubuntu 24.04 서버 설치
 
-새 Mirror Server를 구축할 때 이 페이지를 사용하십시오. Ubuntu 24.04가 이미 설치되고 검증된 서버가 있다면 **Mirror Server 설치 및 준비** 단계로 진행하십시오.
+새 미러 서버를 구축할 때 이 페이지를 사용하십시오. Ubuntu 24.04가 이미 설치되고 검증된 서버가 있다면 **Mirror Server 설치 및 준비** 단계로 진행하십시오.
 
 ## 구축할 서버 사양
 
@@ -99,7 +99,7 @@ sudo systemctl status ssh --no-pager
 
 ## Step 8 — SSH Client KeepAlive 설정
 
-Mirror 준비와 업그레이드 작업은 SSH Terminal이 오랫동안 Idle 상태가 될 수 있습니다. 중간 Firewall, NAT 장비 또는 Idle Session 정책으로 연결이 끊어질 가능성을 줄이기 위해 **Mirror Server와 DP Host에 접속하는 SSH Client**에 KeepAlive를 설정하십시오.
+미러 준비와 업그레이드 작업 중에는 SSH 터미널 입력이 오랫동안 없을 수 있습니다. 방화벽, NAT 장비, 세션 유휴 정책 때문에 연결이 끊기는 일을 줄이려면 **미러 서버와 DP 호스트에 접속하는 SSH 클라이언트**에 KeepAlive를 설정하십시오.
 
 OpenSSH를 사용하는 경우 작업자 PC의 `~/.ssh/config`에 Host별 설정을 추가합니다.
 
@@ -116,12 +116,12 @@ ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5 <user>@<host>
 ```
 
 <Tip>
-  SSH KeepAlive는 Idle Session Timeout을 줄이는 데 도움을 줍니다. Ubuntu Release Hop 중 DP가 재부팅될 때 발생하는 정상적인 SSH Disconnect까지 막아주는 것은 아닙니다. 정상 재부팅 후 다시 접속하여 현재 Upgrade Procedure가 출력한 다음 단계부터 계속하십시오.
+  SSH KeepAlive는 유휴 세션 종료를 줄이는 데 도움이 됩니다. 하지만 Ubuntu 버전 업그레이드 중 DP가 정상적으로 재부팅되면서 SSH가 끊기는 것까지 막지는 못합니다. 재부팅이 끝나면 다시 접속해 현재 업그레이드 절차가 안내하는 다음 단계부터 계속하십시오.
 </Tip>
 
 ## Network 참고
 
-준비 단계에서 Mirror Server는 GitHub, Cloudflare R2, ACPS, Ubuntu Bootstrap Destination으로 Outbound HTTPS 통신이 필요합니다. 실제 DP 업그레이드 중 대상 DP는 **HTTP/TCP 80**으로 Mirror Server에서 준비된 파일을 가져옵니다.
+준비 단계에서 미러 서버는 GitHub, Cloudflare R2, ACPS, Ubuntu 초기 패키지 저장소에 HTTPS로 접속할 수 있어야 합니다. 실제 DP 업그레이드 중에는 대상 DP가 **HTTP/TCP 80**으로 미러 서버에서 준비된 파일을 가져옵니다.
 
 ## 다음 단계
 

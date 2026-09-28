@@ -5,7 +5,7 @@ description: "Follow one ordered runbook to prepare the Mirror Server, upgrade D
 
 # DP Offline Ubuntu Upgrade Guide
 
-This site is an **operator runbook**. If this is your first time performing the upgrade, start with **Step 1** and continue in order. You should not need to assemble a procedure from separate technical pages.
+This site is a step-by-step **operator runbook**. For a first upgrade, start with **Step 1** and follow the numbered pages in order; the full procedure is already arranged for you.
 
 <Tip>
 **First time here?** Start with **[1. Upgrade Work Plan](/runbook/work-plan)**, then follow the numbered pages in the left navigation from top to bottom.
@@ -69,7 +69,7 @@ The current Mirror Manager target is **DP 6.6.0**. Historical screenshots or rec
 ## Three rules to remember
 
 1. **Prepare first.** Complete the Mirror Server work before the production maintenance window whenever possible.
-2. **Use fresh generated commands.** Menu 7 is the authoritative command source for the current Mirror Server IP, mode, and cluster configuration.
+2. **Use freshly generated commands.** Run Menu 7 and use the commands it generates for the current Mirror Server IP, mode, and cluster configuration.
 3. **Keep recovery available.** Create the required hypervisor snapshot(s), follow any additional powered-off snapshot gate printed by the current upgrade client, and keep recovery points until final validation and change-control closure.
 
 ## If something does not match the guide
