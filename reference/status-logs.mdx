@@ -1,6 +1,6 @@
 ---
 title: "Status & Logs"
-description: "Key Mirror Server and DP-side status files, generated commands, and Phase 1 evidence locations."
+description: "Key Mirror Server and DP-side status files, generated commands, and Phase 1 diagnostic records."
 ---
 
 # Status & Logs
@@ -39,7 +39,7 @@ A DP upgrade should normally begin only when the current configuration reports `
 
 ## DP Phase 1 evidence
 
-The current Phase 1 engine records upgrade state and evidence under:
+The current Phase 1 engine records upgrade state and diagnostic data under:
 
 ```text
 /var/log/aella/auto_os_upgrade.log
@@ -51,7 +51,7 @@ The current Phase 1 engine records upgrade state and evidence under:
 
 The state machine can include states such as `BLOCKED`, `FAILED`, `PAUSED`, `RESUME_REQUIRED`, and `COMPLETED`.
 
-Preserve this evidence when escalating a failed upgrade. Do not delete state simply to force a retry.
+Preserve these records when escalating a failed upgrade. Do not delete state simply to force a retry.
 
 ## Application validation
 
