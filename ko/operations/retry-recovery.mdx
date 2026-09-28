@@ -37,11 +37,11 @@ cat /etc/ubuntu-mirror/dp-upgrade-mirror.status
 
 ## DP OS Upgrade State
 
-Phase 1 구현은 Durable State, Command Journal, Integrity Check 및 중앙 State Machine을 사용합니다. Evidence가 불일치하면 Fail Closed하도록 설계되어 있습니다.
+Phase 1은 진행 상태와 명령 기록을 저장하고 무결성을 확인하는 중앙 상태 관리 방식을 사용합니다. 기록이 서로 맞지 않으면 안전을 위해 자동으로 계속 진행하지 않습니다.
 
 오류를 지우기 위해 `/opt/aelladata/os-upgrade`를 삭제하거나 남아 있는 Evidence 위에 임의로 Fresh Install을 수행하지 마십시오.
 
-Low-level Phase 1 Recovery는 현재 Release Tooling이 권장하는 Diagnostic 및 Recovery Action을 사용하십시오. Engineering 구현에는 Lock Recovery, 잘못된 Reboot-required 상태 복구, Resume-stage Recovery 등이 포함될 수 있지만 실제 작업자는 Release에서 생성한 절차를 따라야 합니다.
+Phase 1을 복구해야 할 때는 현재 릴리스 도구가 안내하는 진단과 복구 절차를 사용하십시오. 내부 구현에는 잠금 복구나 잘못된 재부팅 상태 복구 기능이 있을 수 있지만, 실제 작업에서는 릴리스에서 생성한 절차를 따라야 합니다.
 
 ## Rollback
 
