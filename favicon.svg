@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0A182D"/>
-  <path d="M20 43h24" fill="none" stroke="#55C7F3" stroke-width="5" stroke-linecap="round"/>
-  <path d="M32 45V18" fill="none" stroke="#2982E8" stroke-width="6" stroke-linecap="round"/>
-  <path d="M21 29 32 18l11 11" fill="none" stroke="#2982E8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="20" cy="49" r="3" fill="#FFFFFF"/>
-  <circle cx="32" cy="49" r="3" fill="#FF9B1D"/>
-  <circle cx="44" cy="49" r="3" fill="#FFFFFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="DP Offline Upgrade">
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="#1F59E0"/>
+  <path d="M18 45h28" fill="none" stroke="#DCE7FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M32 43V19" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+  <path d="M23 28 32 19l9 9" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="20" cy="48" r="3" fill="#DCE7FF"/>
+  <circle cx="32" cy="48" r="3.5" fill="#FF9B1D"/>
+  <circle cx="44" cy="48" r="3" fill="#55C7F3"/>
 </svg>
