@@ -4,7 +4,9 @@
   "name": "DP Offline Ubuntu Upgrade Guide",
   "description": "Step-by-step operator runbook for preparing a Mirror Server, upgrading Stellar Cyber Data Processors to Ubuntu 24.04, completing DP 6.6.0 bringup, and validating the system.",
   "colors": {
-    "primary": "#16A34A"
+    "primary": "#1F59E0",
+    "light": "#2982E8",
+    "dark": "#5B8CFF"
   },
   "favicon": "/favicon.svg",
   "navigation": {
